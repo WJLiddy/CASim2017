@@ -145,28 +145,28 @@ public class Creator : MonoBehaviour {
             moveObj();
     }
 
+    
 
-    public void addGameObject()
+    public List<string> generateGameObjects()
     {
 
         List<string> models = new List<string>();
         DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/Resources/models/");
-        foreach(var directory in dir.GetDirectories())
+        foreach (var directory in dir.GetDirectories())
         {
             foreach (var file in directory.GetFiles("*.3DS"))
             {
-                models.Add(directory.Name + "/" + file.Name);
+                string filesel = directory.Name + "/" + file.Name;
+                string fpath = "models/" + filesel.Split('.')[0];
+                models.Add(fpath);
+                Debug.Log(fpath);
             }
         }
-        string filesel = models[Random.Range(0, models.Count)];
+        return models;
+    }
 
-        string fpath = "models/" + filesel.Split('.')[0];
-        Debug.Log(fpath);
-
-        GameObject go = Instantiate(Resources.Load(fpath, typeof(GameObject))) as GameObject;
-
-        go.transform.position = new Vector3(0f, 0f, 0f);
-        props.Add(go);
+    public float[] calculateScaleAndMinY(GameObject go)
+    {
         float minY = float.MaxValue;
         float maxY = float.MinValue;
 
@@ -176,14 +176,11 @@ public class Creator : MonoBehaviour {
         float minZ = float.MaxValue;
         float maxZ = float.MinValue;
 
-        foreach (Transform child in go.transform)
+        foreach (MeshFilter child in go.GetComponentsInChildren<MeshFilter>())
         {
-            if(child.gameObject.GetComponent<MeshFilter>() == null)
-            {
-                continue;
-            }
-            Vector3[] vertices = child.gameObject.GetComponent<MeshFilter>().mesh.vertices;
-            foreach(var vertex in vertices)
+
+            Vector3[] vertices = child.mesh.vertices;
+            foreach (var vertex in vertices)
             {
                 if (vertex.y < minY)
                     minY = vertex.y;
@@ -201,23 +198,43 @@ public class Creator : MonoBehaviour {
                     maxZ = vertex.z;
             }
         }
-
         float maxDim = Mathf.Max(Mathf.Max(maxZ - minZ, maxY - minY), maxX - minX);
-        float scale = DEFAULT_METER_SCALE / maxDim;
-        go.transform.localScale = new Vector3(scale, scale, scale);
+        return new float[2] { maxDim, minY };
+    }
 
+    /**
+     *         var fileName = "failed_to_load.txt";
+        var sr = File.CreateText(fileName);
+        
+        sr.Close();
+    */
+
+    public bool fileIsGood(string fpath)
+    {
+        GameObject go = Instantiate(Resources.Load(fpath, typeof(GameObject))) as GameObject;
+
+        go.transform.position = new Vector3(0f, 0f, 0f);
+
+        return float.IsNegativeInfinity(calculateScaleAndMinY(go)[0]);
+    }
+
+    public void loadRandomProp()
+    {
+        var models = generateGameObjects();
+        GameObject go = Instantiate(Resources.Load(models[Random.Range(0, models.Count)], typeof(GameObject))) as GameObject;
+        go.transform.position = new Vector3(0f, 0f, 0f);
+        var scaleInf = calculateScaleAndMinY(go);
+        var scale = DEFAULT_METER_SCALE / scaleInf[0];
+        var minY = scaleInf[1];
+        go.transform.localScale = new Vector3(scale, scale, scale);
         go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y - (scale * minY), go.transform.position.z);
-        //GameObject.FindGameObjectsWithTag("Pedestal")[0];
         props.Add(go);
         selectedObjectIndex = props.Count - 1;
-
-
     }
 
     GameObject selProp()
     {
         return props[selectedObjectIndex];
     }
-
 
 }
