@@ -21,6 +21,31 @@ class Sculpture:
 
 	def returnDate():
 		return self.time
+
+#A gallery of Scuplptures:
+class Sculpture:
+	
+	#Size constructor
+	def __init__(self, size):
+		self.size = size
 		
+	#Default size constructor
+	def __init__(self):
+		self.size = 1000
+
+	def hot_list(self, count):
+		#Create function to get the hottest items
+		hot_ids = []
+		# ...
+		# ...
+		return hot_ids
+
+	def cont_list(self, count):
+		cont_ids = []
+		# ...
+		# ...
+		return cont_ids
+
+
 
 print(time.time())
