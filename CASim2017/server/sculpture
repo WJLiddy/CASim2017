@@ -1,0 +1,29 @@
+class Sculpture
+{
+    private int id;
+
+    private List<int> ratings;
+
+    private DateTime today; // Get time object was created
+
+    //Initialize with the time of day:
+    public Sculpture(int id)
+    {
+        today = DateTime.Now;
+    }
+
+    //Add a rating
+    public void addRating(int rate)
+    {
+    
+
+    }
+
+    public DateTime returnDate()
+    {
+        return today;
+    }
+
+    
+
+}
