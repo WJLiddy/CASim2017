@@ -66,5 +66,3 @@ class Server:
 	     
 	    #came out of loop
 	    conn.close()
-
-serv = Server(50)
