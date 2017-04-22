@@ -1,15 +1,17 @@
 import time
-
+from standard_dev import standard_deviation
 """Python scripture"""
 class Sculpture:    
 	#id of statue -ideee   
 	# __ = pleasedonttouch 
 
-	def __init__(self, idee):
-		self.__id = idee
+	def __init__(self, idee, scp_data):
+		self.data = scp_data
+		self.id = idee
 		self.ratings = []
 		self.time = time.time()
 
+	#rate from 1 to 4
 	def addRating(self, rate):
 		self.ratings.append(rate)
 
@@ -19,10 +21,10 @@ class Sculpture:
 
 	#how controversial?
 	def getCont(self):
-		return 1.337
+		return standard_deviation(self.ratings)
 
 	def getAvRating(self):
-		return sum(ratings) / len(ratings)
+		return sum(self.ratings) / max(len(self.ratings),1)
 
 	def returnDate(self):
 		return self.time
@@ -37,7 +39,7 @@ class Gallery:
 	
 
 	#Add a new item to the museum
-	def push(self, idee):
+	def push(self, idee, scp_data):
 		#if over full list, remove least liked item
 		if len(self.scp_list) >= self.size:
 
@@ -52,14 +54,15 @@ class Gallery:
 					worst_index = index
 				index+=1
 			self.scp_list.pop(worst_index);
-		
-		self.scp_list.append(idee)
+	
+		new_scp =  Sculpture(idee, scp_data)	
+		self.scp_list.append(new_scp)
 
 
 	# scp - sculpture
 	def rate(self, idee, rate):
 		for scp in self.scp_list:
-			if scp.__id == idee:
+			if scp.id == idee:
 				scp.addRating(rate)
 
 	def hot_list(self, count):
@@ -80,15 +83,12 @@ class Gallery:
 		# ...
 		# ...
 
+	#For testing purpose, display the gallery
+	def test_display(self):
+		for scp in self.scp_list:
+			print "ID: %s\n\t data[10]: %s\n\tHeat: %s\n\tCont: %s\n" % (scp.id, scp.data, scp.getHeat(), scp.getCont())
+	
 
 
-print(time.time())
 
-#Gallery of size 5
-gallery = Gallery(5)
 
-gallery.push(4);
-gallery.push(6);
-gallery.push(16);
-gallery.push(12);
-gallery.push(1);
