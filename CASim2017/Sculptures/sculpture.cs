@@ -81,6 +81,19 @@ class Sculptures
         Sculpture new_scp = new Sculpture(id);
         scp_list.Add(new_scp);    
     }
+
+    //List of top COUNT  hot items
+    public List<int> hot(int count){
+        List<int> hot_ids;
+        //TODO: Figure out hot items
+        return hot_ids;
+    }
+    //List of top COUNT controversial ITEMS
+    public List<int> cont(){
+        List<int> cont_ids;
+        //TODO: Figure out controversial items
+        return cont_ids;
+    }
 }
 
 
@@ -102,6 +115,8 @@ namespace Monotest
             gallery.push(3);
             System.Threading.Thread.Sleep(2000);
             gallery.push(6);
+            System.Threading.Thread.Sleep(2000);
+            gallery.push(8);
             Console.WriteLine ("Hello World!");
         }
     }
