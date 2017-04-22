@@ -34,13 +34,16 @@ for pg in range(1893):
 		dl_url = web_url + t + i
 		download_file(dl_url, i)
 		print "DL!"
-		zip_ref = zipfile.ZipFile(i + '.zip', 'r')
-		nwd = join(cwd, i)
-		zip_ref.extractall(nwd)
-		zip_ref.close()
+		try:
+			zip_ref = zipfile.ZipFile(i + '.zip', 'r')
+			nwd = join(cwd, i)
+			zip_ref.extractall(nwd)
+			zip_ref.close()
 
-		for item in os.listdir(nwd):
-		    if not (item.endswith(".3DS")):
-		        os.remove(join(nwd, item))
+			for item in os.listdir(nwd):
+			    if not (item.endswith(".3DS")):
+			        os.remove(join(nwd, item))
+		except:
+			print "Welp. File management is hard."
 
 		os.remove(i + '.zip')
