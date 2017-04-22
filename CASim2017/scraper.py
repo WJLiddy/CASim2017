@@ -40,7 +40,7 @@ for pg in range(1893):
 		zip_ref.close()
 
 		for item in os.listdir(nwd):
-		    if not (item.endswith(".3DS") or item.endswith(".png") or item.endswith(".jpg") or item.endswith(".tif")):
+		    if not (item.endswith(".3DS")):
 		        os.remove(join(nwd, item))
 
 		os.remove(i + '.zip')
