@@ -36,10 +36,6 @@ class Gallery:
 		self.scp_list = []	
 	
 
-
-
-
-
 	#Add a new item to the museum
 	def push(self, idee):
 		#if over full list, remove least liked item
@@ -92,3 +88,7 @@ print(time.time())
 gallery = Gallery(5)
 
 gallery.push(4);
+gallery.push(6);
+gallery.push(16);
+gallery.push(12);
+gallery.push(1);
