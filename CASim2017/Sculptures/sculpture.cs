@@ -1,16 +1,7 @@
+
+
 using System;
 using System.Collections.Generic;
-
-namespace Monotest
-{
-    class MainClass
-    {
-        public static void Main (string[] args)
-        {
-            Console.WriteLine ("Hello World!");
-        }
-    }
-}
 
 //TODO: Maybe make a rating class holding timestamps?
 //TODO: TEST
@@ -64,7 +55,7 @@ class Sculptures
     
 
     //scp - sculpure
-    private List<Sculpture> scp_list;
+    private List<Sculpture> scp_list = new List<Sculpture>();
     //Museum size 
     private int Max_Size;
     //Default constructor: Set up with default list size of 1000
@@ -73,15 +64,42 @@ class Sculptures
     }
 
     //Constructor with int to specify size of list.
-
+    public Sculptures(int size){
+        Max_Size = size;
+    }
+   
     public void push(int id){
-        if (scp_list.Count < Max_Size){        
-            Sculpture new_scp = new Sculpture(id);
-            scp_list.Add(new_scp);
+        //TODO: If list is full , delete least popular item.
+        if (scp_list.Count >= Max_Size) {
+            //DEBUG:
+            Console.WriteLine("Full Gallery!");      
+            scp_list.RemoveAt(0);       
         }
+        //Sculpture new_scp = new Sculpture(id);
+        //scp_list.Add(new_scp);    
     }
 }
 
 
-
+//Testing Function
+namespace Monotest
+{
+    class MainClass
+    {
+        public static void Main (string[] args)
+        {
+            Sculptures gallery = new Sculptures(3);
+            Console.WriteLine("Loading in item with ID 1");
+            gallery.push(1);
+            System.Threading.Thread.Sleep(2000);
+            Console.WriteLine("Loading in item with ID 2");
+            gallery.push(2);
+            System.Threading.Thread.Sleep(2000);
+            Console.WriteLine("Loading in item with ID 3");
+            gallery.push(3);
+            System.Threading.Thread.Sleep(2000);
+            Console.WriteLine ("Hello World!");
+        }
+    }
+}
 
