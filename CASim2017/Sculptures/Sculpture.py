@@ -1,4 +1,5 @@
 import time
+
 """Python scripture"""
 class Sculpture:    
 	#id of statue -ideee   
@@ -13,37 +14,51 @@ class Sculpture:
 		self.ratings.append(rate)
 
 	#How hot is the item?
-	def getHeat():
+	def getHeat(self):
 		return 1.337
 
 	#how controversial?
-	def getCont():
+	def getCont(self):
 		return 1.337
 
-	def getAvRating():
-		return 1.337
+	def getAvRating(self):
+		return sum(ratings) / len(ratings)
 
-	def returnDate():
+	def returnDate(self):
 		return self.time
 
 #A gallery of Scuplptures:
-class Sculptures:
+class Gallery:
 	
 	#Size constructor
-	def __init__(self, size):
+	def __init__(self, size = 1000):
 		self.size = size
 		self.scp_list = []	
 	
-	#Default size constructor
-	def __init__(self):
-		self.size = 1000
-		self.scp_list = []
+
+
+
+
 
 	#Add a new item to the museum
 	def push(self, idee):
-		#if len(self.scp_list) >= self.size:
+		#if over full list, remove least liked item
+		if len(self.scp_list) >= self.size:
+
+			#Remove worst item
+			worst_average = self.scp_list[0].getAvRating()
+			index = 0
+			worst_index=0
+
+			for scp in self.scp_list:
+				if (scp.getAvRating() < worst_average):
+					worst_average = scp.getAvRating()
+					worst_index = index
+				index+=1
+			self.scp_list.pop(worst_index);
 		
 		self.scp_list.append(idee)
+
 
 	# scp - sculpture
 	def rate(self, idee, rate):
@@ -73,4 +88,7 @@ class Sculptures:
 
 print(time.time())
 
-Sculptures 
+#Gallery of size 5
+gallery = Gallery(5)
+
+gallery.push(4);
