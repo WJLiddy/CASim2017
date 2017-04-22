@@ -70,13 +70,16 @@ class Sculptures
    
     public void push(int id){
         //TODO: If list is full , delete least popular item.
+        //DEBUG
+        Console.WriteLine("Size of gallery: {0}", scp_list.Count);
+
         if (scp_list.Count >= Max_Size) {
             //DEBUG:
             Console.WriteLine("Full Gallery!");      
             scp_list.RemoveAt(0);       
         }
-        //Sculpture new_scp = new Sculpture(id);
-        //scp_list.Add(new_scp);    
+        Sculpture new_scp = new Sculpture(id);
+        scp_list.Add(new_scp);    
     }
 }
 
@@ -98,6 +101,7 @@ namespace Monotest
             Console.WriteLine("Loading in item with ID 3");
             gallery.push(3);
             System.Threading.Thread.Sleep(2000);
+            gallery.push(6);
             Console.WriteLine ("Hello World!");
         }
     }
