@@ -1,5 +1,5 @@
 import time
-import standard_dev
+from standard_dev import standard_deviation
 """Python scripture"""
 class Sculpture:    
 	#id of statue -ideee   
@@ -21,7 +21,7 @@ class Sculpture:
 
 	#how controversial?
 	def getCont(self):
-		return 1.337
+		return standard_deviation(self.ratings)
 
 	def getAvRating(self):
 		return sum(self.ratings) / max(len(self.ratings),1)
@@ -86,7 +86,7 @@ class Gallery:
 	#For testing purpose, display the gallery
 	def test_display(self):
 		for scp in self.scp_list:
-			print "ID: %s\n data[10]: %s" % (scp.id, scp.data)
+			print "ID: %s\n\t data[10]: %s\n\tHeat: %s\n\tCont: %s\n" % (scp.id, scp.data, scp.getHeat(), scp.getCont())
 	
 
 

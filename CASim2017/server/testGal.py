@@ -17,6 +17,8 @@ gallery.rate(16, 0);
 gallery.rate(16, 4);
 gallery.rate(16, 0);
 gallery.rate(16, 4);
+gallery.rate(16, 4);
+gallery.rate(16, 0);
 gallery.push(12, "Shit drawing");
 gallery.rate(12,1);
 gallery.rate(12,0);
