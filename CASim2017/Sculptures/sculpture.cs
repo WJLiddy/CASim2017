@@ -13,6 +13,7 @@ namespace Monotest
 }
 
 //TODO: Maybe make a rating class holding timestamps?
+//TODO: TEST
 class Sculpture
 {
     private int id;
@@ -57,3 +58,30 @@ class Sculpture
         return today;
     }    
 }
+
+class Sculptures
+{
+    
+
+    //scp - sculpure
+    private List<Sculpture> scp_list;
+    //Museum size 
+    private int Max_Size;
+    //Default constructor: Set up with default list size of 1000
+    public Sculptures(){
+        Max_Size = 1000;
+    }
+
+    //Constructor with int to specify size of list.
+
+    public void push(int id){
+        if (scp_list.Count < Max_Size){        
+            Sculpture new_scp = new Sculpture(id);
+            scp_list.Add(new_scp);
+        }
+    }
+}
+
+
+
+
