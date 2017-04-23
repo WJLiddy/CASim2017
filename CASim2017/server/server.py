@@ -37,29 +37,32 @@ class Server:
 		    print 'Connected with ' + addr[0] + ':' + str(addr[1])
 		     
 		    #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-		    start_new_thread(clientthread ,(conn,))
+		    start_new_thread(self.clientthread ,(conn,))
 
 		self.s.close()
 	 
 	#Function for handling connections. This will be used to create threads
-	def clientthread(conn):
+	def clientthread(self, conn):
 
 	    #infinite loop so that function do not terminate and thread do not end.
 	    while True:
-	         
+
+	        data = 0 
 	        #Receiving from client
 	        updown = conn.recv(10)
 
-	        if updown == "upload":
+	        if updown == "upload    ":
 		        size = conn.recv(10)
 		        data = conn.recv(int(size))
 		        self.gallery.push(self.current_id, data)
 		        self.current_id += 1
-
+			print self.current_id, updown
 		        conn.sendall('OKAY.')
 
-	        elif updown == "download":
+	        elif updown == "download  ":
 	        	conn.sendall(gallery.hot_list())
+			print updown
+			cconn.sendall('OKAY.')
 
 	        if not data:
 	            break
