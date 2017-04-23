@@ -1,0 +1,8 @@
+# Exported from 3D Builder
+
+newmtl moss
+Kd 0.152941 0.317647 0.113725
+
+newmtl White
+Kd 1.000000 1.000000 1.000000
+map_Kd wizard-oz.jpg

@@ -1,8 +1,8 @@
 import socket
-import sys
+import sys, time
 from thread import *
 from Sculpture import *
- 
+
 class Server:
 
 	HOST = ''   # Symbolic name meaning all available interfaces
@@ -15,14 +15,14 @@ class Server:
 		self.size = size
 		self.gallery = Gallery(self.size)
 		print 'Socket created'
-		 
+		
 		#Bind socket to local host and port
 		try:
 		    self.s.bind((self.HOST, self.PORT))
 		except socket.error as msg:
-		    print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
-		    sys.exit()
-		     
+			print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+			sys.exit()
+			
 		print 'Socket bind complete'
 
 		self.s.listen(10)
@@ -32,39 +32,41 @@ class Server:
 	def start(self):
 		#now keep talking with the client
 		while True:
-		    #wait to accept a connection - blocking call
-		    conn, addr = self.s.accept()
-		    print 'Connected with ' + addr[0] + ':' + str(addr[1])
-		     
-		    #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-		    start_new_thread(self.clientthread ,(conn,))
+			#wait to accept a connection - blocking call
+			conn, addr = self.s.accept()
+			print 'Connected with ' + addr[0] + ':' + str(addr[1])
+			 
+			#start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
+			start_new_thread(self.clientthread ,(conn,))
 
 		self.s.close()
-	 
+	
 	#Function for handling connections. This will be used to create threads
 	def clientthread(self, conn):
 
-	    #infinite loop so that function do not terminate and thread do not end.
-	    while True:
+		#infinite loop so that function do not terminate and thread do not end.
+		while True:
 
-	        data = 0 
-	        #Receiving from client
-	        updown = conn.recv(10)
+			data = 0 
+			#Receiving from client
+			updown = conn.recv(10)
 
-	        if updown == "upload    ":
-		        size = conn.recv(10)
-		        data = conn.recv(int(size))
-		        self.gallery.push(self.current_id, data)
-		        self.LAST_DATA += [data]
-		        self.current_id += 1
-		        print self.current_id, updown
+			if updown == "upload    ":
+				size = conn.recv(10)
+				data = conn.recv(int(size))
+				self.gallery.push(self.current_id, data)
+				self.LAST_DATA += [data]
+				self.current_id += 1
+				print self.current_id, updown
 
-	        elif updown == "download  ":
-		        count = conn.recv(10)
-		        for item in self.LAST_DATA:
-					ilen = str(len(item)) + (' '*(10-len(item)))
+			elif updown == "download  ":
+				time.sleep(1)
+				count = conn.recv(10)
+				for i in range(int(count)):
+					ilen = str(len(self.LAST_DATA[i])) + ' '*(10-len(str(len(self.LAST_DATA[i]))))
 					conn.send(ilen)
-					conn.send(item)
+					conn.send(self.LAST_DATA[i])
+					print updown
 
 		        """
 	        	for item in self.gallery.cont_list(10):
@@ -73,10 +75,10 @@ class Server:
 					print updown
 				"""
 
-	        if not data:
-	            break
+			if not data:
+				break
 	     
 	    #came out of loop
-	    conn.close()
+		conn.close()
 
 se = Server(10)
