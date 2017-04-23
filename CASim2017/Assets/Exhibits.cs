@@ -6,16 +6,44 @@ using UnityEngine;
 public class Exhibits : MonoBehaviour {
 
     List<string> exhibitNames = new List<string>();
-    List<Vector3> exhibitOffsets = new List<Vector3> { new Vector3(-0.3f, 0.2f, 4f), new Vector3(6f, 0.2f, 0.5f) };
+    //kill me
+    List<Vector3> exhibitOffsets = new List<Vector3>
+    { new Vector3(-0.3f, 0.1f, 4f), new Vector3(8.5f, 0f, -4.75f), new Vector3(8.5f, 0f, 4f),
+
+    };
 	// Use this for initialization
 	void Start () {
         Sock s = new Sock();
         var k = s.Recv();
         s.Close();
         setupExhibits(k);
+        setupWojaks();
         Debug.Log("done?");
 	}
 
+    public void setupWojaks()
+    {
+        foreach(var ex in exhibitOffsets)
+        {
+            GameObject go = Instantiate(Resources.Load("kiosk", typeof(GameObject))) as GameObject;
+            go.transform.localPosition = new Vector3(ex.x, ex.y - 0.2f, ex.z - 2);
+            go.transform.eulerAngles = new Vector3(0, 180, 0);
+            go.transform.localScale = new Vector3(0.002f, 0.002f, 0.002f);
+
+            for (int i = 0; i != 4; i++)
+            {
+                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube.name = "WOJAK";
+                cube.transform.localScale = new Vector3(0.07F, 0.1F, 0.001F);
+                cube.transform.eulerAngles = new Vector3(0, 180, 0);
+                cube.transform.localPosition = new Vector3(ex.x + 0.043f + (i * 0.09f), ex.y + 0.25f, ex.z - 2.03f);
+                cube.GetComponent<Renderer>().material.mainTexture = Resources.Load("feels/"+(i+2), typeof(Texture)) as Texture;
+            }
+
+
+
+        } 
+    }
     public Dictionary<string,string> convertNameToPath()
     {
         Dictionary<string,string> models = new Dictionary<string, string>();
