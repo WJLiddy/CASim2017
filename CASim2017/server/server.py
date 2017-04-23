@@ -32,32 +32,32 @@ class Server:
 	def start(self):
 		#now keep talking with the client
 		while True:
-		    #wait to accept a connection - blocking call
-		    conn, addr = self.s.accept()
-		    print 'Connected with ' + addr[0] + ':' + str(addr[1])
-		     
-		    #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-		    start_new_thread(self.clientthread ,(conn,))
+			#wait to accept a connection - blocking call
+			conn, addr = self.s.accept()
+			print 'Connected with ' + addr[0] + ':' + str(addr[1])
+			 
+			#start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
+			start_new_thread(self.clientthread ,(conn,))
 
 		self.s.close()
 	 
 	#Function for handling connections. This will be used to create threads
 	def clientthread(self, conn):
 
-	    #infinite loop so that function do not terminate and thread do not end.
-	    while True:
+			#infinite loop so that function do not terminate and thread do not end.
+			while True:
 
-	        data = 0 
-	        #Receiving from client
-	        updown = conn.recv(10)
+			data = 0 
+			#Receiving from client
+			updown = conn.recv(10)
 self.LAST_DATA[i]
 			if updown == "upload    ":
-		        size = conn.recv(10)
-		        data = conn.recv(int(size))
-		        self.gallery.push(self.current_id, data)
-		        self.LAST_DATA += [data]
-		        self.current_id += 1
-		        print self.current_id, updown
+				size = conn.recv(10)
+				data = conn.recv(int(size))
+				self.gallery.push(self.current_id, data)
+				self.LAST_DATA += [data]
+				self.current_id += 1
+				print self.current_id, updown
 
 	        elif updown == "download  ":
 	        	sleep(1)
