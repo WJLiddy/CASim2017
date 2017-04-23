@@ -2,7 +2,7 @@ import socket
 import sys
 from thread import *
 from Sculpture import *
- 
+
 class Server:
 
 	HOST = ''   # Symbolic name meaning all available interfaces
@@ -15,14 +15,14 @@ class Server:
 		self.size = size
 		self.gallery = Gallery(self.size)
 		print 'Socket created'
-		 
+		
 		#Bind socket to local host and port
 		try:
 		    self.s.bind((self.HOST, self.PORT))
 		except socket.error as msg:
-		    print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
-		    sys.exit()
-		     
+			print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+			sys.exit()
+			
 		print 'Socket bind complete'
 
 		self.s.listen(10)
@@ -40,7 +40,7 @@ class Server:
 			start_new_thread(self.clientthread ,(conn,))
 
 		self.s.close()
-	 
+	
 	#Function for handling connections. This will be used to create threads
 	def clientthread(self, conn):
 
@@ -59,10 +59,10 @@ class Server:
 				self.current_id += 1
 				print self.current_id, updown
 
-	        elif updown == "download  ":
-	        	sleep(1)
-		        count = conn.recv(10)
-		        for i in range(int(count)):
+			elif updown == "download  ":
+				sleep(1)
+				count = conn.recv(10)
+				for i in range(int(count)):
 					ilen = str(len(self.LAST_DATA[i])) + ' '*(10-len(str(len(self.LAST_DATA[i]))))
 					conn.send(ilen)
 					conn.send(self.LAST_DATA[i])
@@ -75,10 +75,10 @@ class Server:
 					print updown
 				"""
 
-	        if not data:
-	            break
+			if not data:
+				break
 	     
 	    #came out of loop
-	    conn.close()
+		conn.close()
 
 se = Server(10)
