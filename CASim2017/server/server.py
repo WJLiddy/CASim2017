@@ -62,9 +62,11 @@ class Server:
 	        elif updown == "download  ":
 		        count = conn.recv(10)
 		        for item in self.LAST_DATA:
-					ilen = str(len(item)) + (' '*(10-len(item)))
-					conn.send(ilen)
-					conn.send(item)
+		        	for i in range(count)
+						ilen = str(len(item)) + ' '*(10-len(str(len(item))))
+						conn.send(ilen)
+						conn.send(item)
+						print updown
 
 		        """
 	        	for item in self.gallery.cont_list(10):
