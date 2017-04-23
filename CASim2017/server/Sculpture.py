@@ -93,7 +93,9 @@ class Gallery:
 		return hot_ids
 
 	#Return a list of Tuples of form (controversy)
-	def cont_list(self, count):
+	def cont_list(self, count = False ):
+		if count == False:
+			count = len(self.scp_list)
 		
 		#controversial item id's
 		cont_ids = []
