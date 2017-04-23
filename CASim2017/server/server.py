@@ -44,13 +44,13 @@ class Server:
 	#Function for handling connections. This will be used to create threads
 	def clientthread(self, conn):
 
-			#infinite loop so that function do not terminate and thread do not end.
-			while True:
+		#infinite loop so that function do not terminate and thread do not end.
+		while True:
 
 			data = 0 
 			#Receiving from client
 			updown = conn.recv(10)
-self.LAST_DATA[i]
+
 			if updown == "upload    ":
 				size = conn.recv(10)
 				data = conn.recv(int(size))
