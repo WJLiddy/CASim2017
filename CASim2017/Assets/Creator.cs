@@ -151,12 +151,49 @@ public class Creator : MonoBehaviour {
     bool focus = false;
 	// Update is called once per frame
 	void Update () {
+        heightAt();
         focus = GameObject.FindGameObjectsWithTag("focus")[0].GetComponent<InputField>().isFocused;
-        Debug.Log(focus);
         moveCam();
 
         if(props.Count != 0)
             moveObj();
+    }
+
+    public bool collide(GameObject a, GameObject b)
+    {
+
+        var ab = getBox(a);
+        var bb = getBox(b);
+        Debug.Log("X WAS" + ab[0] + "\n");
+        // { minX, maxX, minY, maxY, minZ, maxZ };
+        if (ab[0] < bb[1] &&
+           ab[1] > bb[0] &&
+           ab[4] < bb[5] &&
+           ab[5] > bb[4])
+        {
+            // collision detected!
+            return true;
+        }
+
+        return false;
+    }
+
+    float heightAt()
+    {
+        float y = 0;
+        foreach(var obj in props)
+        {
+            if (obj == selProp())
+                break;
+            // { minX, maxX, minY, maxY, minZ, maxZ };
+            var e = getBox(obj);
+            if(collide(obj,selProp()))
+            {
+                Debug.Log("Collide!");
+                y = Mathf.Max(y,e[5]);
+            }
+        }
+        return y;
     }
 
     
@@ -179,7 +216,8 @@ public class Creator : MonoBehaviour {
         return models;
     }
 
-    public float[] calculateScaleAndMinY(GameObject go)
+    //minX, maxX, minY, maxY, minZ,maxZ
+    public float[] getBox(GameObject go)
     {
         float minY = float.MaxValue;
         float maxY = float.MinValue;
@@ -194,8 +232,9 @@ public class Creator : MonoBehaviour {
         {
 
             Vector3[] vertices = child.mesh.vertices;
-            foreach (var vertex in vertices)
+            foreach (var r_vertex in vertices)
             {
+                var vertex = go.transform.TransformPoint(r_vertex);
                 if (vertex.y < minY)
                     minY = vertex.y;
                 if (vertex.y > maxY)
@@ -212,8 +251,16 @@ public class Creator : MonoBehaviour {
                     maxZ = vertex.z;
             }
         }
-        float maxDim = Mathf.Max(Mathf.Max(maxZ - minZ, maxY - minY), maxX - minX);
-        return new float[2] { maxDim, minY };
+        return new float[] { minX, maxX, minY, maxY, minZ, maxZ };
+    }
+
+
+    public float[] calculateScaleAndMinY(GameObject go)
+    {
+
+        float[] vals = getBox(go);
+        float maxDim = Mathf.Max(Mathf.Max(vals[1] - vals[0], vals[3]- vals[2]), vals[5] - vals[4]);
+        return new float[2] { maxDim, vals[2] };
     }
 
     /**
@@ -243,9 +290,7 @@ public class Creator : MonoBehaviour {
         GameObject go = Instantiate(Resources.Load(modelname, typeof(GameObject))) as GameObject;
         go.transform.position = new Vector3(0f, 0f, 0f);
         var scaleInf = calculateScaleAndMinY(go);
-        Debug.Log("DMS" + DEFAULT_METER_SCALE);
         var scale = DEFAULT_METER_SCALE / scaleInf[0];
-        Debug.Log("SCALE" + scale);
         var minY = scaleInf[1];
         go.transform.localScale = new Vector3(scale, scale, scale);
         go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y - (scale * minY), go.transform.position.z);
