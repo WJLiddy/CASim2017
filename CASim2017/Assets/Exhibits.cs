@@ -3,22 +3,52 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class Exhibits : MonoBehaviour {
+public class Exhibits : MonoBehaviour
+{
 
     List<string> exhibitNames = new List<string>();
-    List<Vector3> exhibitOffsets = new List<Vector3> { new Vector3(-0.3f, 0.2f, 4f), new Vector3(6f, 0.2f, 0.5f) };
-	// Use this for initialization
-	void Start () {
+    //kill me
+    List<Vector3> exhibitOffsets = new List<Vector3>
+    { new Vector3(-0.3f, 0.1f, 4f), new Vector3(8.5f, 0f, -4.75f), new Vector3(8.5f, 0f, 4f),
+
+    };
+    // Use this for initialization
+    void Start()
+    {
         Sock s = new Sock();
         var k = s.Recv();
         s.Close();
         setupExhibits(k);
+        setupWojaks();
         Debug.Log("done?");
-	}
+    }
 
-    public Dictionary<string,string> convertNameToPath()
+    public void setupWojaks()
     {
-        Dictionary<string,string> models = new Dictionary<string, string>();
+        foreach (var ex in exhibitOffsets)
+        {
+            GameObject go = Instantiate(Resources.Load("kiosk", typeof(GameObject))) as GameObject;
+            go.transform.localPosition = new Vector3(ex.x, ex.y - 0.2f, ex.z - 2);
+            go.transform.eulerAngles = new Vector3(0, 180, 0);
+            go.transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
+
+            for (int i = 0; i != 4; i++)
+            {
+                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube.name = "WOJAK";
+                cube.transform.localScale = new Vector3(3*0.07F, 3*0.07F, 0.001F);
+                cube.transform.eulerAngles = new Vector3(0, 180, 0);
+                cube.transform.localPosition = new Vector3(ex.x + 0.12f + (i * 0.22f), ex.y + 0.9f, ex.z - 2.09f);
+                cube.GetComponent<Renderer>().material.mainTexture = Resources.Load("feels/" + (i + 2), typeof(Texture)) as Texture;
+            }
+
+
+
+        }
+    }
+    public Dictionary<string, string> convertNameToPath()
+    {
+        Dictionary<string, string> models = new Dictionary<string, string>();
         DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/Resources/models/");
         foreach (var directory in dir.GetDirectories())
         {
@@ -33,11 +63,12 @@ public class Exhibits : MonoBehaviour {
         }
         return models;
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
 
     public void setupExhibits(List<SimpleJSON.JSONNode> ex)
@@ -51,7 +82,7 @@ public class Exhibits : MonoBehaviour {
             exhibitNames.Add(json["name"]);
             foreach (SimpleJSON.JSONNode part in json["prop"].AsArray)
             {
-               
+
                 Debug.Log("PROP IS" + part["name"]);
                 GameObject go = Instantiate(Resources.Load(models[part["name"]], typeof(GameObject))) as GameObject;
                 go.transform.position = exhibitOffsets[i] + new Vector3(part["x"], part["y"], part["z"]);
