@@ -374,11 +374,10 @@ public class Creator : MonoBehaviour {
         props[props.Count - 1].transform.localScale = new Vector3(scale, scale, scale);
     }
 
-
     public string toJSON()
     {
         JSONObject json = new JSONObject();
-        json["title"] = "Untitled Work";
+        json["title"] = GameObject.FindGameObjectsWithTag("TitleText")[0].GetComponent<Text>().text;
         
         for(int i = 0; i != props.Count; i++)
         {

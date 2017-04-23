@@ -31,6 +31,7 @@ public class Exhibits : MonoBehaviour
 
     public void setupWojaks()
     {
+        int k = 0;
         foreach (var ex in exhibitOffsets)
         {
             GameObject go = Instantiate(Resources.Load("kiosk", typeof(GameObject))) as GameObject;
@@ -48,8 +49,15 @@ public class Exhibits : MonoBehaviour
                 cube.GetComponent<Renderer>().material.mainTexture = Resources.Load("feels/" + (i + 2), typeof(Texture)) as Texture;
             }
 
-
-
+            if (k > 7)
+                return;
+            GameObject text = new GameObject();
+            var c = text.AddComponent<TextMesh>();
+            c.name = "TEXT";
+            c.text = exhibitNames[k];
+            text.transform.localScale = new Vector3(0.04F, 0.05F, 0.001F);
+            text.transform.localPosition = new Vector3(ex.x + 0.10f, ex.y + 1.1f, ex.z - 2.09f);
+            k++;
         }
     }
     public Dictionary<string, string> convertNameToPath()
@@ -80,16 +88,17 @@ public class Exhibits : MonoBehaviour
     public void setupExhibits(List<SimpleJSON.JSONNode> ex)
     {
         var models = convertNameToPath();
-        for (int i = 0; i != 2; i++)
+        for (int i = 0; i != 8; i++)
         {
             var json = ex[i];
-            Debug.Log(json);
+            Debug.Log("WORK TITLE IS" + json["title"]);
+            Debug.Log("PROP COUNT IS" + json["prop"].AsArray.Count);
 
-            exhibitNames.Add(json["name"]);
+            exhibitNames.Add(json["title"]);
             foreach (SimpleJSON.JSONNode part in json["prop"].AsArray)
             {
 
-                Debug.Log("PROP IS" + part["name"]);
+                //Debug.Log("PROP IS" + part["name"]);
                 GameObject go = Instantiate(Resources.Load(models[part["name"]], typeof(GameObject))) as GameObject;
                 go.transform.position = exhibitOffsets[i] + new Vector3(part["x"], part["y"], part["z"]);
                 go.transform.eulerAngles = new Vector3(part["rotx"], part["roty"], part["rotz"]);
