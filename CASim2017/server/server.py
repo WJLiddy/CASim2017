@@ -11,7 +11,7 @@ class Server:
 	current_id = 0
 
 	def __init__(self, size):
-		
+		self.LAST_DATA = []
 		self.size = size
 		self.gallery = Gallery(self.size)
 		print 'Socket created'
@@ -55,15 +55,22 @@ class Server:
 		        size = conn.recv(10)
 		        data = conn.recv(int(size))
 		        self.gallery.push(self.current_id, data)
+		        self.LAST_DATA += [data]
 		        self.current_id += 1
 		        print self.current_id, updown
 
 	        elif updown == "download  ":
 		        count = conn.recv(10)
-	        	for item in gallery.cont_list(10):
+		        for item in self.LAST_DATA:
+					conn.sendall(len(item))
+					conn.sendall(item)
+
+		        """
+	        	for item in self.gallery.cont_list(10):
 					conn.sendall(len(item))
 					conn.sendall(item)
 					print updown
+				"""
 
 	        if not data:
 	            break
