@@ -1,0 +1,8 @@
+# Exported from 3D Builder
+
+newmtl Indigo
+Kd 0.243137 0.278431 0.796079
+
+newmtl White
+Kd 1.000000 1.000000 1.000000
+map_Kd artsfon.com-80949.jpg
