@@ -8,7 +8,7 @@ using SimpleJSON;
 public class Creator : MonoBehaviour {
     
     public Transform target;
-    public int selectedObjectIndex = 0;
+    public int propItr = 0;
     public List<GameObject> props = new List<GameObject>();
     public List<string> propnames = new List<string>();
     public List<float> scales = new List<float>();
@@ -20,14 +20,19 @@ public class Creator : MonoBehaviour {
     public enum FACING {N,W,S,E}
     public FACING facing;
     public float DEFAULT_METER_SCALE = 0.7f;
+    public List<string> models;
     // Use this for initialization
     void Start () {
 	    target = GameObject.FindGameObjectsWithTag("Pedestal")[0].transform;
         anchorVector = new Vector3(0, 0, -1);
+        models = generateGameObjects();
     }
 	
     void moveCam()
     {
+        if (focus)
+            return;
+
         float newY = anchorVector.y;
 
         if (Input.GetKey(KeyCode.W))
@@ -89,6 +94,8 @@ public class Creator : MonoBehaviour {
 
     void moveObj()
     {
+        if (focus)
+            return;
         float newX = selProp().transform.position.x;
         float newY = selProp().transform.position.y;
         float newZ = selProp().transform.position.z;
@@ -141,8 +148,11 @@ public class Creator : MonoBehaviour {
       
         selProp().transform.position = new Vector3(newX, newY, newZ);
     }
+    bool focus = false;
 	// Update is called once per frame
 	void Update () {
+        focus = GameObject.FindGameObjectsWithTag("focus")[0].GetComponent<InputField>().isFocused;
+        Debug.Log(focus);
         moveCam();
 
         if(props.Count != 0)
@@ -224,8 +234,12 @@ public class Creator : MonoBehaviour {
 
     public void loadRandomProp()
     {
-        var models = generateGameObjects();
-        var modelname = models[Random.Range(0, models.Count)];
+        loadProp(propItr);
+    }
+
+    public void loadProp(int pid)
+    {
+        var modelname = models[pid];
         GameObject go = Instantiate(Resources.Load(modelname, typeof(GameObject))) as GameObject;
         go.transform.position = new Vector3(0f, 0f, 0f);
         var scaleInf = calculateScaleAndMinY(go);
@@ -236,7 +250,7 @@ public class Creator : MonoBehaviour {
         go.transform.localScale = new Vector3(scale, scale, scale);
         go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y - (scale * minY), go.transform.position.z);
         props.Add(go);
-        selectedObjectIndex = props.Count - 1;
+        var selectedObjectIndex = props.Count - 1;
         var plist = GameObject.FindGameObjectsWithTag("PropList")[0];
         var child = new GameObject();
         var childTextBox = child.AddComponent(typeof(Text)) as Text;
@@ -251,7 +265,7 @@ public class Creator : MonoBehaviour {
 
     GameObject selProp()
     {
-        return props[selectedObjectIndex];
+        return props[props.Count - 1];
     }
 
     public void publish()
@@ -263,6 +277,51 @@ public class Creator : MonoBehaviour {
         Debug.Log("closing...\n");
         s.Close();
     }
+
+    public void remove()
+    {
+        props[props.Count - 1].SetActive(false);
+        props.RemoveAt(props.Count - 1);
+        propnames.RemoveAt(propnames.Count - 1);
+        scales.RemoveAt(scales.Count - 1);
+    }
+
+    public void next()
+    {
+        remove();
+        propItr = (propItr + 1) % models.Count;
+        loadProp(propItr);
+    }
+
+    public void prev()
+    {
+        remove();
+        propItr = (propItr - 1) % models.Count;
+        if (propItr < 0)
+            propItr = 0;
+        loadProp(propItr);
+    }
+
+    public void rotate()
+    {
+        selProp().transform.Rotate(0f, 90f, 0f);
+    }
+
+
+    public void sizeUP()
+    {
+        scales[props.Count - 1] = scales[props.Count - 1] * 1.5f;
+        var scale = scales[props.Count - 1]; 
+        props[props.Count - 1].transform.localScale = new Vector3(scale, scale, scale);
+    }
+
+    public void sizeDOWN()
+    {
+        scales[props.Count - 1] = scales[props.Count - 1] * 0.7f;
+        var scale = scales[props.Count - 1];
+        props[props.Count - 1].transform.localScale = new Vector3(scale, scale, scale);
+    }
+
 
     public string toJSON()
     {
