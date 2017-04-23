@@ -1,5 +1,8 @@
 import time
+from bisect import bisect
 from standard_dev import standard_deviation
+
+
 """Python scripture"""
 #Rating contains score and timestamp
 class Rate:
@@ -89,12 +92,34 @@ class Gallery:
 		# ...
 		return hot_ids
 
+	#Return a list of Tuples of form (controversy)
 	def cont_list(self, count):
+		
+		#controversial item id's
 		cont_ids = []
-		# ...
-		# ...
-		return cont_ids
+
+		for i in range(count):
+			controversy = self.scp_list[i].getCont()
+			position = bisect(cont_ids, (controversy, -1));
+			cont_ids.insert(position, (controversy , self.scp_list[i].id))
+
+		
+			
+		for i in range(count, len(self.scp_list)):
+			#If something is more controversial: Delete the bottom
+			#of controversialness list and add new thing
+			if (self.scp_list[i].getCont() > cont_ids[0][0]):
+				cont_ids.pop(0)
+				controversy = self.scp_list[i].getCont()
+				position = bisect(cont_ids, (controversy, -1));
+				cont_ids.insert(position, (controversy , self.scp_list[i].id))
+		
+			#Return item numbers only
+		for i in range (count):
+			cont_ids[i] = cont_ids[i][1]
 	
+		return cont_ids
+
 	def new_list(self, count):
 		new_ids = []
 		# ...

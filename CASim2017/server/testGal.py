@@ -29,3 +29,4 @@ gallery.rate(1, 2);
 gallery.push(1, "NEW piece");
 
 gallery.test_display();
+print gallery.cont_list(2);
