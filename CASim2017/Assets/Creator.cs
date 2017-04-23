@@ -13,13 +13,13 @@ public class Creator : MonoBehaviour {
     public List<string> propnames = new List<string>();
     public List<float> scales = new List<float>();
     public float angle = 0.0f;
-    public static float radius = 0.9f;
+    public static float radius = 2.9f;
     public Vector3 anchorVector = new Vector3(0f, 0f, 0f);
     public float camSpeed = 0.03f;
-    public float objMoveSpeed = 0.01f;
+    public float objMoveSpeed = 0.04f;
     public enum FACING {N,W,S,E}
     public FACING facing;
-    public float DEFAULT_METER_SCALE = 0.2f;
+    public float DEFAULT_METER_SCALE = 0.7f;
     // Use this for initialization
     void Start () {
 	    target = GameObject.FindGameObjectsWithTag("Pedestal")[0].transform;
@@ -229,7 +229,9 @@ public class Creator : MonoBehaviour {
         GameObject go = Instantiate(Resources.Load(modelname, typeof(GameObject))) as GameObject;
         go.transform.position = new Vector3(0f, 0f, 0f);
         var scaleInf = calculateScaleAndMinY(go);
+        Debug.Log("DMS" + DEFAULT_METER_SCALE);
         var scale = DEFAULT_METER_SCALE / scaleInf[0];
+        Debug.Log("SCALE" + scale);
         var minY = scaleInf[1];
         go.transform.localScale = new Vector3(scale, scale, scale);
         go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y - (scale * minY), go.transform.position.z);
@@ -270,6 +272,7 @@ public class Creator : MonoBehaviour {
         for(int i = 0; i != props.Count; i++)
         {
             JSONObject prop = new JSONObject();
+            prop["name"] = propnames[i];
             prop["x"] = props[i].transform.position.x;
             prop["y"] = props[i].transform.position.y;
             prop["z"] = props[i].transform.position.z;
@@ -277,6 +280,7 @@ public class Creator : MonoBehaviour {
             prop["roty"] = props[i].transform.rotation.y;
             prop["rotz"] = props[i].transform.rotation.z;
             prop["scale"] = scales[i];
+            json["prop"][-1] = prop;
         }
         return json.ToString();
     }

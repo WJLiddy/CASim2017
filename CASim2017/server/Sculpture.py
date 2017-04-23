@@ -1,4 +1,5 @@
 import time
+import os, sys
 from bisect import bisect
 from standard_dev import standard_deviation
 
@@ -14,7 +15,12 @@ A quick summery of Useful stuff:
 		getHeat() - How hot is this item (double)
 		getCont() - How controversial? (doube)
 		getScores() - What are the scores without the timestamps, in list form
-		
+	
+	Gallery:
+		push(int ID, data) - Push back a sculpture
+		rate(ID, score) - give sculpture a rating
+		hot_list(int X) - top X hot items, from not to hot
+		cont_list(int x) - top X controversials, from normal to CRazy 	
 
 
 
@@ -113,7 +119,11 @@ class Sculpture:
 
 
 	def load(self, filepath):
-		load_file = open(filepath) 
+		load_file = open(filepath, 'r') 
+		
+		line = load_file.readline()
+		line = load_file.readline()
+
 
 #A gallery of Scuplptures:
 class Gallery:
@@ -240,7 +250,14 @@ class Gallery:
 		for scp in self.scp_list:
 			scp.save();
 
-	def load_all(self):
-		pass
+	#Load one file
+	def load_one
 
+	def load_all(self, directory = False):
+		if (directory == False):
+			directory = "Scp_Saves";
+		files = []
+		files = os.listdir(directory)
+		
 
+print os.listdir("Scp_Saves")
