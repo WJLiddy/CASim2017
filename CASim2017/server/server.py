@@ -60,7 +60,7 @@ class Server:
 
 	        elif updown == "download  ":
 		        count = conn.recv(10)
-	        	for item in gallery.cont_list(10)
+	        	for item in gallery.cont_list(10):
 					conn.sendall(len(item))
 					conn.sendall(item)
 				print updown
