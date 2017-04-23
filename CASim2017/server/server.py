@@ -56,13 +56,13 @@ class Server:
 		        data = conn.recv(int(size))
 		        self.gallery.push(self.current_id, data)
 		        self.current_id += 1
-			print self.current_id, updown
+		        print self.current_id, updown
 		        conn.sendall('OKAY.')
 
 	        elif updown == "download  ":
 	        	conn.sendall(gallery.hot_list())
-			print updown
-			cconn.sendall('OKAY.')
+				print updown
+				cconn.sendall('OKAY.')
 
 	        if not data:
 	            break
