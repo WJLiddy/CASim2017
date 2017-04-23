@@ -1,10 +1,18 @@
 import time
 from standard_dev import standard_deviation
 """Python scripture"""
+#Rating contains score and timestamp
+class Rate:
+	def __init__(self, score, timestamp):
+		self.score = score
+		self.time = timestamp
+
+
 class Sculpture:    
 	#id of statue -ideee   
 	# __ = pleasedonttouch 
 
+	#Give initial score of 4 - then remove after 3 ratings
 	def __init__(self, idee, scp_data):
 		self.data = scp_data
 		self.id = idee
@@ -13,18 +21,25 @@ class Sculpture:
 
 	#rate from 1 to 4
 	def addRating(self, rate):
-		self.ratings.append(rate)
+		rating = Rate(rate, time.time())
+		self.ratings.append(rating)
 
 	#How hot is the item?
 	def getHeat(self):
 		return 1.337
 
+	def getScores(self):
+		scores = []
+		for rating in self.ratings:
+			scores.append(rating.score)
+		return scores
+
 	#how controversial?
 	def getCont(self):
-		return standard_deviation(self.ratings)
+		return standard_deviation(self.getScores())
 
 	def getAvRating(self):
-		return sum(self.ratings) / max(len(self.ratings),1)
+		return sum(self.getScores()) / max(len(self.getScores()),1)
 
 	def returnDate(self):
 		return self.time
@@ -50,8 +65,10 @@ class Gallery:
 
 			for scp in self.scp_list:
 				if (scp.getAvRating() < worst_average):
-					worst_average = scp.getAvRating()
-					worst_index = index
+				#Check if not an unrated item:
+					if not(len(scp.ratings) == 0):
+						worst_average = scp.getAvRating()
+						worst_index = index
 				index+=1
 			self.scp_list.pop(worst_index);
 	
