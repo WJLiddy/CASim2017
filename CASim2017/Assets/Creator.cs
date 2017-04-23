@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine.UI;
 
 public class Creator : MonoBehaviour {
     
     public Transform target;
     public int selectedObjectIndex = 0;
     public List<GameObject> props = new List<GameObject>();
+    public List<string> propnames = new List<string>();
     public float angle = 0.0f;
     public static float radius = 0.9f;
     public Vector3 anchorVector = new Vector3(0f, 0f, 0f);
@@ -221,7 +223,8 @@ public class Creator : MonoBehaviour {
     public void loadRandomProp()
     {
         var models = generateGameObjects();
-        GameObject go = Instantiate(Resources.Load(models[Random.Range(0, models.Count)], typeof(GameObject))) as GameObject;
+        var modelname = models[Random.Range(0, models.Count)];
+        GameObject go = Instantiate(Resources.Load(modelname, typeof(GameObject))) as GameObject;
         go.transform.position = new Vector3(0f, 0f, 0f);
         var scaleInf = calculateScaleAndMinY(go);
         var scale = DEFAULT_METER_SCALE / scaleInf[0];
@@ -230,11 +233,35 @@ public class Creator : MonoBehaviour {
         go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y - (scale * minY), go.transform.position.z);
         props.Add(go);
         selectedObjectIndex = props.Count - 1;
+        var plist = GameObject.FindGameObjectsWithTag("PropList")[0];
+        var child = new GameObject();
+        var childTextBox = child.AddComponent(typeof(Text)) as Text;
+        childTextBox.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+        var split = modelname.Split('/');
+        var name = split[split.Length - 1];
+        childTextBox.text = name;
+        propnames.Add(name);
+        child.transform.SetParent(plist.transform); 
     }
 
     GameObject selProp()
     {
         return props[selectedObjectIndex];
+    }
+
+    public void publish()
+    {
+        Debug.Log("joining server...\n");
+        Sock s = new Sock();
+        Debug.Log("trying submitting...\n");
+        s.Submit();
+        Debug.Log("closing...\n");
+        s.Close();
+    }
+
+    public string toJSON()
+    {
+        return "";
     }
 
 }
