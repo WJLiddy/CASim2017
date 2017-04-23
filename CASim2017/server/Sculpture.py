@@ -46,8 +46,24 @@ class Sculpture:
 		self.ratings.append(rating)
 
 	#How hot is the item?
-	def getHeat(self):
-		return 1.337
+	def getHeat(self, seconds = False):
+		curr_time = time.time()
+		#three hour default:
+		if (seconds == False):
+			seconds = 10800
+		
+		positive_reviews=0	
+
+		for i in range(len(self.ratings)):
+			index = len(self.ratings) - 1 - i
+			diffTime = curr_time - self.ratings[index].time
+			#If the review was recent enough: Use it - It must also be good
+			if diffTime < seconds:
+				if (self.ratings[index].score >= 2.5):
+					positive_reviews+=1;
+			
+
+		return positive_reviews;
 
 	def getScores(self):
 		scores = []
@@ -125,7 +141,7 @@ class Gallery:
 			#If something is more controversial: Delete the bottom
 			#of controversialness list and add new thing
 			if (self.scp_list[i].getHeat() > hot_ids[0][0]):
-				cont_ids.pop(0)
+				hot_ids.pop(0)
 				hotness = self.scp_list[i].getHeat()
 				position = bisect(hot_ids, (hotness, -1));
 				hot_ids.insert(position, (hotness , self.scp_list[i].data))
@@ -137,11 +153,9 @@ class Gallery:
 		return hot_ids
 
 
-		#Create function to get the hottest items
-		hot_ids = []
-		# ...
-		# ...
-		return hot_ids
+		
+	
+	
 
 	#Return a list of Tuples of form (controversy)
 	def cont_list(self, count = False ):
