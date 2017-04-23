@@ -51,7 +51,7 @@ class Server:
 	        #Receiving from client
 	        updown = conn.recv(10)
 self.LAST_DATA[i]
-	        if updown == "upload    ":
+			if updown == "upload    ":
 		        size = conn.recv(10)
 		        data = conn.recv(int(size))
 		        self.gallery.push(self.current_id, data)
