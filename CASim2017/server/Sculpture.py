@@ -128,7 +128,7 @@ class Gallery:
 				cont_ids.pop(0)
 				hotness = self.scp_list[i].getHeat()
 				position = bisect(hot_ids, (hotness, -1));
-				hot_ids.insert(position, (hotness , self.scp_list[i].id))
+				hot_ids.insert(position, (hotness , self.scp_list[i].data))
 		
 			#Return item numbers only
 		for i in range (count):
@@ -165,7 +165,7 @@ class Gallery:
 				cont_ids.pop(0)
 				controversy = self.scp_list[i].getCont()
 				position = bisect(cont_ids, (controversy, -1));
-				cont_ids.insert(position, (controversy , self.scp_list[i].id))
+				cont_ids.insert(position, (controversy , self.scp_list[i].data))
 		
 			#Return item numbers only
 		for i in range (count):
@@ -181,7 +181,7 @@ class Gallery:
 		new_ids = []
 		for i in range(count):
 			index = len(self.scp_list) - count + i
-			new_ids.append(self.scp_list[index].id)
+			new_ids.append(self.scp_list[index].data)
 			
 		return new_ids
 
