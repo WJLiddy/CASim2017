@@ -170,6 +170,7 @@ class Sculpture:
 			
 		self.id = scp_id
 		self.time = scp_time
+		self.data = scp_data
 		for i in range(len(scp_scores)):
 			new_review = Rate(scp_scores[i], scp_times[i])
 			self.ratings.append(new_review)
@@ -223,15 +224,15 @@ class Gallery:
 			if scp.id == idee:
 				scp.addRating(rate)
 
-	def hot_list(self, count = False):
+	def hot_list(self, count = False, time = False):
 		if count == False:
 			count = len(self.scp_list)
-		
+
 		#controversial item id's
 		hot_data = []
 
 		for i in range(count):
-			hotness = self.scp_list[i].getHeat()
+			hotness = self.scp_list[i].getHeat(time)
 			position = bisect(hot_data, (hotness, -1));
 			hot_data.insert(position, (hotness , self.scp_list[i].data))
 
@@ -242,7 +243,7 @@ class Gallery:
 			#of controversialness list and add new thing
 			if (self.scp_list[i].getHeat() > hot_data[0][0]):
 				hot_data.pop(0)
-				hotness = self.scp_list[i].getHeat()
+				hotness = self.scp_list[i].getHeat(time)
 				position = bisect(hot_data, (hotness, -1));
 				hot_data.insert(position, (hotness , self.scp_list[i].data))
 		

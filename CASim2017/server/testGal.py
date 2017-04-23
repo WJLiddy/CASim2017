@@ -4,7 +4,8 @@ print(time.time())
 
 #Gallery of size 5
 gallery = Gallery(5)
-
+gallery.load_all()
+"""
 gallery.push(4, "Great piece");
 gallery.rate(4, 3);
 gallery.rate(4, 4);
@@ -28,7 +29,7 @@ gallery.push(1, "Ya, okay");
 gallery.rate(1, 2);
 gallery.rate(1, 2);
 gallery.push(2, "NEW piece");
-
+"""
 gallery.test_display();
 print "Controversial: %s" % gallery.cont_list(2);
 print "Hot: %s" % gallery.hot_list(2);
