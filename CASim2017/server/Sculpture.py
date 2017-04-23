@@ -344,4 +344,4 @@ class Gallery:
 			self.load_one(files[i], directory)
 		
 
-print os.listdir("Scp_Saves")
+
