@@ -13,6 +13,7 @@ public class Creator : MonoBehaviour {
     public List<string> propnames = new List<string>();
     public List<float> scales = new List<float>();
     public List<float> floor = new List<float>();
+    public List<float[]> cachedBox = new List<float[]>();
     public float angle = 0.0f;
     public static float radius = 2.9f;
     public Vector3 anchorVector = new Vector3(0f, 0f, 0f);
@@ -163,10 +164,11 @@ public class Creator : MonoBehaviour {
             //Debug.Log(y);
             selProp().transform.position = new Vector3(selProp().transform.position.x, floor[floor.Count - 1] + y, selProp().transform.position.z);
             moveObj();
+            cachedBox[cachedBox.Count - 1] = getBoxNoCache(props[props.Count - 1]);
         }
     }
 
-    public bool collide(GameObject a, GameObject b)
+    public bool collide(int a, int b)
     {
 
         var ab = getBox(a);
@@ -187,17 +189,19 @@ public class Creator : MonoBehaviour {
     float heightAt()
     {
         float y = 0;
+        int i = 0;
         foreach(var obj in props)
         {
             if (obj == selProp())
                 break;
             // { minX, maxX, minY, maxY, minZ, maxZ };
-            var e = getBox(obj);
-            if(collide(obj,selProp()))
+            var e = getBox(i);
+            if(collide(i,props.Count - 1))
             {
                 //Debug.Log("Collide!");
                 y = Mathf.Max(y,e[3]);
             }
+            i++;
         }
         return y;
     }
@@ -222,8 +226,12 @@ public class Creator : MonoBehaviour {
         return models;
     }
 
+    public float[] getBox(int i)
+    {
+        return cachedBox[i];
+    }
     //minX, maxX, minY, maxY, minZ,maxZ
-    public float[] getBox(GameObject go)
+    public float[] getBoxNoCache(GameObject go)
     {
         float minY = float.MaxValue;
         float maxY = float.MinValue;
@@ -261,10 +269,8 @@ public class Creator : MonoBehaviour {
     }
 
 
-    public float[] calculateScaleAndMinY(GameObject go)
+    public float[] calculateScaleAndMinY(float[] vals)
     {
-
-        float[] vals = getBox(go);
         float maxDim = Mathf.Max(Mathf.Max(vals[1] - vals[0], vals[3]- vals[2]), vals[5] - vals[4]);
         return new float[2] { maxDim, vals[2] };
     }
@@ -276,15 +282,6 @@ public class Creator : MonoBehaviour {
         sr.Close();
     */
 
-    public bool fileIsGood(string fpath)
-    {
-        GameObject go = Instantiate(Resources.Load(fpath, typeof(GameObject))) as GameObject;
-
-        go.transform.position = new Vector3(0f, 0f, 0f);
-
-        return float.IsNegativeInfinity(calculateScaleAndMinY(go)[0]);
-    }
-
     public void loadRandomProp()
     {
         loadProp(propItr);
@@ -295,7 +292,7 @@ public class Creator : MonoBehaviour {
         var modelname = models[pid];
         GameObject go = Instantiate(Resources.Load(modelname, typeof(GameObject))) as GameObject;
         go.transform.position = new Vector3(0f, 0f, 0f);
-        var scaleInf = calculateScaleAndMinY(go);
+        var scaleInf = calculateScaleAndMinY(getBoxNoCache(go));
         var scale = DEFAULT_METER_SCALE / scaleInf[0];
         var minY = scaleInf[1];
         go.transform.localScale = new Vector3(scale, scale, scale);
@@ -311,6 +308,7 @@ public class Creator : MonoBehaviour {
         childTextBox.text = name;
         propnames.Add(name);
         scales.Add(scale);
+        cachedBox.Add(getBoxNoCache(go));
         child.transform.SetParent(plist.transform);
         floor.Add(go.transform.position.y);
     }
@@ -335,7 +333,8 @@ public class Creator : MonoBehaviour {
         props[props.Count - 1].SetActive(false);
         props.RemoveAt(props.Count - 1);
         propnames.RemoveAt(propnames.Count - 1);
-        scales.RemoveAt(scales.Count - 1);
+        scales.RemoveAt(scales.Count - 1) ;
+        cachedBox.RemoveAt(cachedBox.Count - 1);
         floor.RemoveAt(floor.Count - 1);
     }
 
@@ -388,9 +387,9 @@ public class Creator : MonoBehaviour {
             prop["x"] = props[i].transform.position.x;
             prop["y"] = props[i].transform.position.y;
             prop["z"] = props[i].transform.position.z;
-            prop["rotx"] = props[i].transform.rotation.x;
-            prop["roty"] = props[i].transform.rotation.y;
-            prop["rotz"] = props[i].transform.rotation.z;
+            prop["rotx"] = props[i].transform.eulerAngles.x;
+            prop["roty"] = props[i].transform.eulerAngles.y;
+            prop["rotz"] = props[i].transform.eulerAngles.z;
             prop["scale"] = scales[i];
             json["prop"][-1] = prop;
         }
