@@ -62,9 +62,8 @@ class Server:
 	        elif updown == "download  ":
 		        count = conn.recv(10)
 		        for item in self.LAST_DATA:
-		        	it = str(len(item)) + (' '*10-len(item))
-
-					conn.send(len(item))
+					ilen = str(len(item)) + (' '*10-len(item))
+					conn.send(ilen)
 					conn.send(item)
 
 		        """
