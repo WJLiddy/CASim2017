@@ -21,7 +21,7 @@ public class CameraControl : MonoBehaviour {
         if (Input.GetKey(KeyCode.A))
         {
             posX -= (float)Math.Cos((yaw * Math.PI) / 180.0f) * speedMov;
-            posZ -= (float)Math.Sin((yaw * Math.PI) / 180.0f) * speedMov;
+            posZ += (float)Math.Sin((yaw * Math.PI) / 180.0f) * speedMov;
         }
 
          
@@ -40,7 +40,7 @@ public class CameraControl : MonoBehaviour {
         if (Input.GetKey(KeyCode.D))
         {
             posX += (float)Math.Cos((yaw * Math.PI) / 180.0f) * speedMov;
-            posZ += (float)Math.Sin((yaw * Math.PI) / 180.0f) * speedMov;
+            posZ -= (float)Math.Sin((yaw * Math.PI) / 180.0f) * speedMov;
         }
 
         transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
