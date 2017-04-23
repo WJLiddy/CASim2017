@@ -60,6 +60,7 @@ self.LAST_DATA[i]
 		        print self.current_id, updown
 
 	        elif updown == "download  ":
+	        	sleep(1)
 		        count = conn.recv(10)
 		        for i in range(int(count)):
 					ilen = str(len(self.LAST_DATA[i])) + ' '*(10-len(str(len(self.LAST_DATA[i]))))
