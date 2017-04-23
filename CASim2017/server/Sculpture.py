@@ -81,10 +81,13 @@ class Sculpture:
 	def returnDate(self):
 		return self.time
 
-	def Save():
+	def Save(self):
+		filepath = "Scp_Saves/" + str(self.id)
+		save_file = open(filepath)
 
 
-	def Load():
+	def Load(self, filepath):
+		load_file = open(filepath) 
 
 #A gallery of Scuplptures:
 class Gallery:
@@ -156,8 +159,6 @@ class Gallery:
 			hot_data[i] = hot_data[i][1]
 	
 		return hot_data
-
-
 		
 	
 	
