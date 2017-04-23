@@ -19,19 +19,29 @@ public class CameraControl : MonoBehaviour {
         pitch -= speedV * Input.GetAxis("Mouse Y");
 
         if (Input.GetKey(KeyCode.A))
-             Debug.Log("Pressing A");
+        {
+            posX -= (float)Math.Cos((yaw * Math.PI) / 180.0f) * speedMov;
+            posZ -= (float)Math.Sin((yaw * Math.PI) / 180.0f) * speedMov;
+        }
+
          
-         if (Input.GetKey(KeyCode.W))
-         {
-            posX += (float)Math.Sin((yaw * Math.PI) / 180.0f) * speedMov;
-            posZ += (float)Math.Cos((yaw * Math.PI) / 180.0f) * speedMov;
-         }
+        if (Input.GetKey(KeyCode.W))
+        {
+           posX += (float)Math.Sin((yaw * Math.PI) / 180.0f) * speedMov;
+           posZ += (float)Math.Cos((yaw * Math.PI) / 180.0f) * speedMov;
+        }
  
-         if (Input.GetKey(KeyCode.S))
-             Debug.Log("Pressing S");
+        if (Input.GetKey(KeyCode.S))
+        {
+           posX -= (float)Math.Sin((yaw * Math.PI) / 180.0f) * speedMov;
+           posZ -= (float)Math.Cos((yaw * Math.PI) / 180.0f) * speedMov;
+        }
  
-         if (Input.GetKey(KeyCode.D))
-             Debug.Log("Pressing D");
+        if (Input.GetKey(KeyCode.D))
+        {
+            posX += (float)Math.Cos((yaw * Math.PI) / 180.0f) * speedMov;
+            posZ += (float)Math.Sin((yaw * Math.PI) / 180.0f) * speedMov;
+        }
 
         transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
         transform.position = new Vector3(posX, posY, posZ);

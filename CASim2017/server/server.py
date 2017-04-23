@@ -79,7 +79,6 @@ class Server:
 				break
 	     
 	    #came out of loop
-		conn.recv(1)
 		conn.close()
 
 se = Server(10)
