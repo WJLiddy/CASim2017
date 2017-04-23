@@ -17,10 +17,11 @@ def download_file(url, id):
 				f.write(chunk)
 
 web_url = 'https://archive3d.net/'
+cat_url = '?category=' + '31'
 cwd = join(os.getcwd() + '\\models')
 
-for pg in range(1893):
-	page_url = 'https://archive3d.net/?page=' + str(1+(pg*24))
+for pg in range(15):
+	page_url = web_url + cat_url + '&page=' + str(1+(pg*24))
 	page = requests.get(page_url)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	p = soup.find_all('a')
