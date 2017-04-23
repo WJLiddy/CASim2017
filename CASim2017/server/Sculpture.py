@@ -122,10 +122,15 @@ class Gallery:
 	
 		return cont_ids
 
-	def new_list(self, count):
+	def new_list(self, count = False):
+		if count == False:
+			count = len(self.scp_list)
+
 		new_ids = []
-		# ...
-		# ...
+		for i in range(count):
+			new_ids.append(self.scp_list[i].id)
+			
+		return new_ids
 
 	#For testing purpose, display the gallery
 	def test_display(self):
