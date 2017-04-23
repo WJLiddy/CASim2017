@@ -9,7 +9,13 @@ public class Exhibits : MonoBehaviour
     List<string> exhibitNames = new List<string>();
     //kill me
     List<Vector3> exhibitOffsets = new List<Vector3>
-    { new Vector3(-0.3f, 0.1f, 4f), new Vector3(8.5f, 0f, -4.75f), new Vector3(8.5f, 0f, 4f),
+	{ new Vector3(-0.3f, 0.1f, 4f), new Vector3(8.5f, 0f, -4.75f), new Vector3(8.5f, 0f, 4f), new Vector3(8.5f, 0f, 12.75f), new Vector3(-0.3f, 0f, 12.75f), 
+		new Vector3(-8.85f, 0f, 12.75f), new Vector3(-8.85f, 0f, 4f), new Vector3(-8.85f, 0f, -4.75f), new Vector3(-19.15f, 0f, 12.75f), new Vector3(-19.15f, 0f, 4f), 
+		new Vector3(-19.15f, 0f, -4.75f), new Vector3(-27.85f, 0f, 12.75f), new Vector3(-27.85f, 0f, 4f), new Vector3(-27.85f, 0f, -4.75f), new Vector3(-36.75f, 0f, 12.75f), 
+		new Vector3(-36.75f, 0f, 4f), new Vector3(-36.75f, 0f, -4.75f), new Vector3(18.85f, 0f, 12.75f), new Vector3(18.85f, 0f, 4f), new Vector3(18.85f, 0f, -4.75f), 
+		new Vector3(27.6f, 0f, 12.75f), new Vector3(27.6f, 0f, 4f), new Vector3(27.6f, 0f, -4.75f), new Vector3(36.25f, 0f, 12.75f), new Vector3(36.25f, 0f, 4f), 
+		new Vector3(36.25f, 0f, -4.75f), new Vector3(8.5f, 0f, 23.15f), new Vector3(8.5f, 0f, 31.85f), new Vector3(8.5f, 0f, 40.65f), new Vector3(-0.3f, 0f, 23.15f), 
+		new Vector3(-0.3f, 0f, 31.85f), new Vector3(-0.3f, 0f, 40.65f), new Vector3(-8.85f, 0f, 23.15f), new Vector3(-8.85f, 0f, 31.85f), new Vector3(-8.85f, 0f, 40.65f)
 
     };
     // Use this for initialization
