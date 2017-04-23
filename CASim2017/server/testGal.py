@@ -26,7 +26,9 @@ gallery.rate(12,0);
 gallery.push(1, "Ya, okay");
 gallery.rate(1, 2);
 gallery.rate(1, 2);
-gallery.push(1, "NEW piece");
+gallery.push(2, "NEW piece");
 
 gallery.test_display();
-print gallery.cont_list(2);
+print "Controversial: %s" % gallery.cont_list(2);
+print "Hot: %s" % gallery.hot_list(2);
+print "New: %s" % gallery.new_list(2);

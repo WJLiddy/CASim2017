@@ -2,6 +2,24 @@ import time
 from bisect import bisect
 from standard_dev import standard_deviation
 
+"""
+A quick summery of Useful stuff:
+	Rate - Don't worry about it
+
+	Sculpture:
+		id - sculpture id
+		data - Mystrious string mickey wants for describing picture
+		ratings - list of time-stamped ratings
+		time - time item was initialized
+		getHeat() - How hot is this item (double)
+		getCont() - How controversial? (doube)
+		getScores() - What are the scores without the timestamps, in list form
+		
+
+
+
+
+"""
 
 """Python scripture"""
 #Rating contains score and timestamp
@@ -78,6 +96,10 @@ class Gallery:
 		new_scp =  Sculpture(idee, scp_data)	
 		self.scp_list.append(new_scp)
 
+	def get_sculpt(self, idee):
+		for scp in self.scp_list:
+			if scp.id == idee:
+				return scp
 
 	# scp - sculpture
 	def rate(self, idee, rate):
@@ -85,7 +107,36 @@ class Gallery:
 			if scp.id == idee:
 				scp.addRating(rate)
 
-	def hot_list(self, count):
+	def hot_list(self, count = False):
+		if count == False:
+			count = len(self.scp_list)
+		
+		#controversial item id's
+		hot_ids = []
+
+		for i in range(count):
+			hotness = self.scp_list[i].getHeat()
+			position = bisect(hot_ids, (hotness, -1));
+			hot_ids.insert(position, (hotness , self.scp_list[i].id))
+
+		
+			
+		for i in range(count, len(self.scp_list)):
+			#If something is more controversial: Delete the bottom
+			#of controversialness list and add new thing
+			if (self.scp_list[i].getHeat() > hot_ids[0][0]):
+				cont_ids.pop(0)
+				hotness = self.scp_list[i].getHeat()
+				position = bisect(hot_ids, (hotness, -1));
+				hot_ids.insert(position, (hotness , self.scp_list[i].id))
+		
+			#Return item numbers only
+		for i in range (count):
+			hot_ids[i] = hot_ids[i][1]
+	
+		return hot_ids
+
+
 		#Create function to get the hottest items
 		hot_ids = []
 		# ...
@@ -122,13 +173,15 @@ class Gallery:
 	
 		return cont_ids
 
+	#list new items in gallery
 	def new_list(self, count = False):
 		if count == False:
 			count = len(self.scp_list)
 
 		new_ids = []
 		for i in range(count):
-			new_ids.append(self.scp_list[i].id)
+			index = len(self.scp_list) - count + i
+			new_ids.append(self.scp_list[index].id)
 			
 		return new_ids
 
