@@ -128,29 +128,29 @@ class Gallery:
 			count = len(self.scp_list)
 		
 		#controversial item id's
-		hot_ids = []
+		hot_data = []
 
 		for i in range(count):
 			hotness = self.scp_list[i].getHeat()
-			position = bisect(hot_ids, (hotness, -1));
-			hot_ids.insert(position, (hotness , self.scp_list[i].data))
+			position = bisect(hot_data, (hotness, -1));
+			hot_data.insert(position, (hotness , self.scp_list[i].data))
 
 		
 			
 		for i in range(count, len(self.scp_list)):
 			#If something is more controversial: Delete the bottom
 			#of controversialness list and add new thing
-			if (self.scp_list[i].getHeat() > hot_ids[0][0]):
-				hot_ids.pop(0)
+			if (self.scp_list[i].getHeat() > hot_data[0][0]):
+				hot_data.pop(0)
 				hotness = self.scp_list[i].getHeat()
-				position = bisect(hot_ids, (hotness, -1));
-				hot_ids.insert(position, (hotness , self.scp_list[i].data))
+				position = bisect(hot_data, (hotness, -1));
+				hot_data.insert(position, (hotness , self.scp_list[i].data))
 		
 			#Return item numbers only
 		for i in range (count):
-			hot_ids[i] = hot_ids[i][1]
+			hot_data[i] = hot_data[i][1]
 	
-		return hot_ids
+		return hot_data
 
 
 		
@@ -163,30 +163,29 @@ class Gallery:
 			count = len(self.scp_list)
 		
 		#controversial item id's
-		cont_ids = []
+		cont_data = []
 
 		for i in range(count):
 			controversy = self.scp_list[i].getCont()
-			position = bisect(cont_ids, (controversy, -1));
-			cont_ids.insert(position, (controversy , self.scp_list[i].data))
+			position = bisect(cont_data, (controversy, -1));
+			cont_data.insert(position, (controversy , self.scp_list[i].data))
 
 		
 			
 		for i in range(count, len(self.scp_list)):
 			#If something is more controversial: Delete the bottom
 			#of controversialness list and add new thing
-			if (self.scp_list[i].getCont() > cont_ids[0][0]):
-				cont_ids.pop(0)
+			if (self.scp_list[i].getCont() > cont_data[0][0]):
+				cont_data.pop(0)
 				controversy = self.scp_list[i].getCont()
-				position = bisect(cont_ids, (controversy, -1));
-				cont_ids.insert(position, (controversy , self.scp_list[i].data))
+				position = bisect(cont_data, (controversy, -1));
+				cont_data.insert(position, (controversy , self.scp_list[i].data))
 		
 			#Return item numbers only
 		for i in range (count):
-			cont_ids[i] = cont_ids[i][1]
+			cont_data[i] = cont_data[i][1]
 	
-		return cont_ids
-
+		return cont_data
 	#list new items in gallery
 	def new_list(self, count = False):
 		if count == False:
