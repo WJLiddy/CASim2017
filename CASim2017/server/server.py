@@ -50,7 +50,7 @@ class Server:
 	        data = 0 
 	        #Receiving from client
 	        updown = conn.recv(10)
-
+self.LAST_DATA[i]
 	        if updown == "upload    ":
 		        size = conn.recv(10)
 		        data = conn.recv(int(size))
@@ -64,7 +64,7 @@ class Server:
 		        for i in range(int(count)):
 					ilen = str(len(self.LAST_DATA[i])) + ' '*(10-len(str(len(self.LAST_DATA[i]))))
 					conn.send(ilen)
-					conn.send(item)
+					conn.send(self.LAST_DATA[i])
 					print updown
 
 		        """
