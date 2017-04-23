@@ -60,7 +60,7 @@ class Server:
 		        conn.sendall('OKAY.')
 
 	        elif updown == "download  ":
-	        	conn.sendall(gallery.hot_list())
+				conn.sendall(gallery.hot_list())
 				print updown
 				cconn.sendall('OKAY.')
 
