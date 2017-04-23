@@ -81,6 +81,11 @@ class Sculpture:
 	def returnDate(self):
 		return self.time
 
+	def Save():
+
+
+	def Load():
+
 #A gallery of Scuplptures:
 class Gallery:
 	
