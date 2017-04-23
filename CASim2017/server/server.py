@@ -63,7 +63,7 @@ class Server:
 	        	for item in gallery.cont_list(10):
 					conn.sendall(len(item))
 					conn.sendall(item)
-				print updown
+					print updown
 
 	        if not data:
 	            break
