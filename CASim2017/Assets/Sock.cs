@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 public class Sock
 {
     Socket sender;
-    string buf = "";
 
     public Sock()
     {
@@ -35,6 +35,65 @@ public class Sock
         }
         sender.Send(Encoding.ASCII.GetBytes(json));
     }
+
+
+    public List<SimpleJSON.JSONNode> Recv()
+    {
+        sender.Send(Encoding.ASCII.GetBytes("download  "));
+        sender.Send(Encoding.ASCII.GetBytes("10        "));
+        List<SimpleJSON.JSONNode> list = new List<SimpleJSON.JSONNode>();
+
+        string buf = "";
+        for (int prop = 0; prop != 2; prop++)
+        {
+            Debug.Log("await...");
+
+            while (buf.Length < 10)
+            {
+                // Data buffer for incoming data.  
+                byte[] bytes = new byte[1024 * 1024];
+                // Receive the response from the remote device.  
+                int bytesRec = 0;
+                try
+                {
+                    bytesRec = sender.Receive(bytes);
+                } catch
+                {
+                    continue;
+                }
+                buf += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+            }
+
+            int o;
+            Int32.TryParse(buf.Substring(0, 10), out o);
+
+            Debug.Log("prop has " + o + "bytes");
+
+            buf = buf.Substring(10);
+
+
+            while (buf.Length < o)
+            {
+                // Data buffer for incoming data.  
+                byte[] bytes = new byte[1024 * 1024];
+                // Receive the response from the remote device.  
+                int bytesRec = 0;
+                try
+                {
+                    bytesRec = sender.Receive(bytes);
+                }
+                catch
+                {
+                    continue;
+                }
+                buf += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+            }
+            list.Add(SimpleJSON.JSON.Parse(buf.Substring(0,o)));
+            buf = buf.Substring(o);
+        }
+        return list;
+    }
+
 
     /**
     // tries to read for 0.1 sec. returns NULL if nothing read.
