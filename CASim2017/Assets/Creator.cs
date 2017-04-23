@@ -12,6 +12,7 @@ public class Creator : MonoBehaviour {
     public List<GameObject> props = new List<GameObject>();
     public List<string> propnames = new List<string>();
     public List<float> scales = new List<float>();
+    public List<float> floor = new List<float>();
     public float angle = 0.0f;
     public static float radius = 2.9f;
     public Vector3 anchorVector = new Vector3(0f, 0f, 0f);
@@ -151,12 +152,18 @@ public class Creator : MonoBehaviour {
     bool focus = false;
 	// Update is called once per frame
 	void Update () {
-        heightAt();
+
+
         focus = GameObject.FindGameObjectsWithTag("focus")[0].GetComponent<InputField>().isFocused;
         moveCam();
 
-        if(props.Count != 0)
+        if (props.Count != 0)
+        {
+            float y = heightAt();
+            //Debug.Log(y);
+            selProp().transform.position = new Vector3(selProp().transform.position.x, floor[floor.Count - 1] + y, selProp().transform.position.z);
             moveObj();
+        }
     }
 
     public bool collide(GameObject a, GameObject b)
@@ -164,7 +171,6 @@ public class Creator : MonoBehaviour {
 
         var ab = getBox(a);
         var bb = getBox(b);
-        Debug.Log("X WAS" + ab[0] + "\n");
         // { minX, maxX, minY, maxY, minZ, maxZ };
         if (ab[0] < bb[1] &&
            ab[1] > bb[0] &&
@@ -189,8 +195,8 @@ public class Creator : MonoBehaviour {
             var e = getBox(obj);
             if(collide(obj,selProp()))
             {
-                Debug.Log("Collide!");
-                y = Mathf.Max(y,e[5]);
+                //Debug.Log("Collide!");
+                y = Mathf.Max(y,e[3]);
             }
         }
         return y;
@@ -210,7 +216,7 @@ public class Creator : MonoBehaviour {
                 string filesel = directory.Name + "/" + file.Name;
                 string fpath = "models/" + filesel.Split('.')[0];
                 models.Add(fpath);
-                Debug.Log(fpath);
+                //Debug.Log(fpath);
             }
         }
         return models;
@@ -305,7 +311,8 @@ public class Creator : MonoBehaviour {
         childTextBox.text = name;
         propnames.Add(name);
         scales.Add(scale);
-        child.transform.SetParent(plist.transform); 
+        child.transform.SetParent(plist.transform);
+        floor.Add(go.transform.position.y);
     }
 
     GameObject selProp()
@@ -329,6 +336,7 @@ public class Creator : MonoBehaviour {
         props.RemoveAt(props.Count - 1);
         propnames.RemoveAt(propnames.Count - 1);
         scales.RemoveAt(scales.Count - 1);
+        floor.RemoveAt(floor.Count - 1);
     }
 
     public void next()
