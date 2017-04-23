@@ -21,7 +21,7 @@ A quick summery of Useful stuff:
 		rate(ID, score) - give sculpture a rating
 		hot_list(int X) - top X hot items, from not to hot
 		cont_list(int x) - top X controversials, from normal to CRazy 	
-
+		new_list(int X) - Most recent things - doe
 
 
 
@@ -288,13 +288,33 @@ class Gallery:
 	def new_list(self, count = False):
 		if count == False:
 			count = len(self.scp_list)
+		
+		#controversial item id's
+		new_data = []
 
-		new_ids = []
 		for i in range(count):
-			index = len(self.scp_list) - count + i
-			new_ids.append(self.scp_list[index].data)
+			time = self.scp_list[i].time
+			position = bisect(new_data, (time, -1));
+			new_data.insert(position, (time , self.scp_list[i].data))
+
+		
 			
-		return new_ids
+		for i in range(count, len(self.scp_list)):
+			#If something is more controversial: Delete the bottom
+			#of controversialness list and add new thing
+			if (self.scp_list[i].time > new_data[0][0]):
+				new_data.pop(0)
+				time = self.scp_list[i].time
+				position = bisect(new_data, (time, -1));
+				new_data.insert(position, (time , self.scp_list[i].data))
+		
+			#Return item numbers only
+		for i in range (count):
+			new_data[i] = new_data[i][1]
+	
+		return new_data
+	
+		
 
 	#For testing purpose, display the gallery
 	def test_display(self):
