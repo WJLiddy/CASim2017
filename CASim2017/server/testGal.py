@@ -11,7 +11,8 @@ gallery.rate(4, 4);
 gallery.rate(4, 4);
 gallery.push(6, "Darn not good");
 gallery.rate(6, 2);
-gallery.rate(6, 1.5);
+gallery.rate(6, 1);
+gallery.rate(6, 2)
 gallery.push(16, "This is CONTROVERISAL");
 gallery.rate(16, 0);
 gallery.rate(16, 4);
@@ -35,3 +36,7 @@ print "New: %s" % gallery.new_list(2);
 print "Saving files!"
 gallery.save_all();
 print "Saved"
+print "Loading new gallery"
+NEWgallery = Gallery(5)
+NEWgallery.load_all()
+

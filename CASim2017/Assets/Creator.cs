@@ -8,10 +8,12 @@ using SimpleJSON;
 public class Creator : MonoBehaviour {
     
     public Transform target;
-    public int selectedObjectIndex = 0;
+    public int propItr = 0;
     public List<GameObject> props = new List<GameObject>();
     public List<string> propnames = new List<string>();
     public List<float> scales = new List<float>();
+    public List<float> floor = new List<float>();
+    public List<float[]> cachedBox = new List<float[]>();
     public float angle = 0.0f;
     public static float radius = 2.9f;
     public Vector3 anchorVector = new Vector3(0f, 0f, 0f);
@@ -20,14 +22,19 @@ public class Creator : MonoBehaviour {
     public enum FACING {N,W,S,E}
     public FACING facing;
     public float DEFAULT_METER_SCALE = 0.7f;
+    public List<string> models;
     // Use this for initialization
     void Start () {
 	    target = GameObject.FindGameObjectsWithTag("Pedestal")[0].transform;
         anchorVector = new Vector3(0, 0, -1);
+        models = generateGameObjects();
     }
 	
     void moveCam()
     {
+        if (focus)
+            return;
+
         float newY = anchorVector.y;
 
         if (Input.GetKey(KeyCode.W))
@@ -89,6 +96,8 @@ public class Creator : MonoBehaviour {
 
     void moveObj()
     {
+        if (focus)
+            return;
         float newX = selProp().transform.position.x;
         float newY = selProp().transform.position.y;
         float newZ = selProp().transform.position.z;
@@ -141,12 +150,60 @@ public class Creator : MonoBehaviour {
       
         selProp().transform.position = new Vector3(newX, newY, newZ);
     }
+    bool focus = false;
 	// Update is called once per frame
 	void Update () {
+
+
+        focus = GameObject.FindGameObjectsWithTag("focus")[0].GetComponent<InputField>().isFocused;
         moveCam();
 
-        if(props.Count != 0)
+        if (props.Count != 0)
+        {
+            float y = heightAt();
+            //Debug.Log(y);
+            selProp().transform.position = new Vector3(selProp().transform.position.x, floor[floor.Count - 1] + y, selProp().transform.position.z);
             moveObj();
+            cachedBox[cachedBox.Count - 1] = getBoxNoCache(props[props.Count - 1]);
+        }
+    }
+
+    public bool collide(int a, int b)
+    {
+
+        var ab = getBox(a);
+        var bb = getBox(b);
+        // { minX, maxX, minY, maxY, minZ, maxZ };
+        if (ab[0] < bb[1] &&
+           ab[1] > bb[0] &&
+           ab[4] < bb[5] &&
+           ab[5] > bb[4])
+        {
+            // collision detected!
+            return true;
+        }
+
+        return false;
+    }
+
+    float heightAt()
+    {
+        float y = 0;
+        int i = 0;
+        foreach(var obj in props)
+        {
+            if (obj == selProp())
+                break;
+            // { minX, maxX, minY, maxY, minZ, maxZ };
+            var e = getBox(i);
+            if(collide(i,props.Count - 1))
+            {
+                //Debug.Log("Collide!");
+                y = Mathf.Max(y,e[3]);
+            }
+            i++;
+        }
+        return y;
     }
 
     
@@ -163,13 +220,18 @@ public class Creator : MonoBehaviour {
                 string filesel = directory.Name + "/" + file.Name;
                 string fpath = "models/" + filesel.Split('.')[0];
                 models.Add(fpath);
-                Debug.Log(fpath);
+                //Debug.Log(fpath);
             }
         }
         return models;
     }
 
-    public float[] calculateScaleAndMinY(GameObject go)
+    public float[] getBox(int i)
+    {
+        return cachedBox[i];
+    }
+    //minX, maxX, minY, maxY, minZ,maxZ
+    public float[] getBoxNoCache(GameObject go)
     {
         float minY = float.MaxValue;
         float maxY = float.MinValue;
@@ -184,8 +246,9 @@ public class Creator : MonoBehaviour {
         {
 
             Vector3[] vertices = child.mesh.vertices;
-            foreach (var vertex in vertices)
+            foreach (var r_vertex in vertices)
             {
+                var vertex = go.transform.TransformPoint(r_vertex);
                 if (vertex.y < minY)
                     minY = vertex.y;
                 if (vertex.y > maxY)
@@ -202,8 +265,14 @@ public class Creator : MonoBehaviour {
                     maxZ = vertex.z;
             }
         }
-        float maxDim = Mathf.Max(Mathf.Max(maxZ - minZ, maxY - minY), maxX - minX);
-        return new float[2] { maxDim, minY };
+        return new float[] { minX, maxX, minY, maxY, minZ, maxZ };
+    }
+
+
+    public float[] calculateScaleAndMinY(float[] vals)
+    {
+        float maxDim = Mathf.Max(Mathf.Max(vals[1] - vals[0], vals[3]- vals[2]), vals[5] - vals[4]);
+        return new float[2] { maxDim, vals[2] };
     }
 
     /**
@@ -213,30 +282,23 @@ public class Creator : MonoBehaviour {
         sr.Close();
     */
 
-    public bool fileIsGood(string fpath)
-    {
-        GameObject go = Instantiate(Resources.Load(fpath, typeof(GameObject))) as GameObject;
-
-        go.transform.position = new Vector3(0f, 0f, 0f);
-
-        return float.IsNegativeInfinity(calculateScaleAndMinY(go)[0]);
-    }
-
     public void loadRandomProp()
     {
-        var models = generateGameObjects();
-        var modelname = models[Random.Range(0, models.Count)];
+        loadProp(propItr);
+    }
+
+    public void loadProp(int pid)
+    {
+        var modelname = models[pid];
         GameObject go = Instantiate(Resources.Load(modelname, typeof(GameObject))) as GameObject;
         go.transform.position = new Vector3(0f, 0f, 0f);
-        var scaleInf = calculateScaleAndMinY(go);
-        Debug.Log("DMS" + DEFAULT_METER_SCALE);
+        var scaleInf = calculateScaleAndMinY(getBoxNoCache(go));
         var scale = DEFAULT_METER_SCALE / scaleInf[0];
-        Debug.Log("SCALE" + scale);
         var minY = scaleInf[1];
         go.transform.localScale = new Vector3(scale, scale, scale);
         go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y - (scale * minY), go.transform.position.z);
         props.Add(go);
-        selectedObjectIndex = props.Count - 1;
+        var selectedObjectIndex = props.Count - 1;
         var plist = GameObject.FindGameObjectsWithTag("PropList")[0];
         var child = new GameObject();
         var childTextBox = child.AddComponent(typeof(Text)) as Text;
@@ -246,12 +308,14 @@ public class Creator : MonoBehaviour {
         childTextBox.text = name;
         propnames.Add(name);
         scales.Add(scale);
-        child.transform.SetParent(plist.transform); 
+        cachedBox.Add(getBoxNoCache(go));
+        child.transform.SetParent(plist.transform);
+        floor.Add(go.transform.position.y);
     }
 
     GameObject selProp()
     {
-        return props[selectedObjectIndex];
+        return props[props.Count - 1];
     }
 
     public void publish()
@@ -264,10 +328,56 @@ public class Creator : MonoBehaviour {
         s.Close();
     }
 
+    public void remove()
+    {
+        props[props.Count - 1].SetActive(false);
+        props.RemoveAt(props.Count - 1);
+        propnames.RemoveAt(propnames.Count - 1);
+        scales.RemoveAt(scales.Count - 1) ;
+        cachedBox.RemoveAt(cachedBox.Count - 1);
+        floor.RemoveAt(floor.Count - 1);
+    }
+
+    public void next()
+    {
+        remove();
+        propItr = (propItr + 1) % models.Count;
+        loadProp(propItr);
+    }
+
+    public void prev()
+    {
+        remove();
+        propItr = (propItr - 1) % models.Count;
+        if (propItr < 0)
+            propItr = 0;
+        loadProp(propItr);
+    }
+
+    public void rotate()
+    {
+        selProp().transform.Rotate(0f, 90f, 0f);
+    }
+
+
+    public void sizeUP()
+    {
+        scales[props.Count - 1] = scales[props.Count - 1] * 1.5f;
+        var scale = scales[props.Count - 1]; 
+        props[props.Count - 1].transform.localScale = new Vector3(scale, scale, scale);
+    }
+
+    public void sizeDOWN()
+    {
+        scales[props.Count - 1] = scales[props.Count - 1] * 0.7f;
+        var scale = scales[props.Count - 1];
+        props[props.Count - 1].transform.localScale = new Vector3(scale, scale, scale);
+    }
+
     public string toJSON()
     {
         JSONObject json = new JSONObject();
-        json["title"] = "Untitled Work";
+        json["title"] = GameObject.FindGameObjectsWithTag("TitleText")[0].GetComponent<Text>().text;
         
         for(int i = 0; i != props.Count; i++)
         {
@@ -276,9 +386,9 @@ public class Creator : MonoBehaviour {
             prop["x"] = props[i].transform.position.x;
             prop["y"] = props[i].transform.position.y;
             prop["z"] = props[i].transform.position.z;
-            prop["rotx"] = props[i].transform.rotation.x;
-            prop["roty"] = props[i].transform.rotation.y;
-            prop["rotz"] = props[i].transform.rotation.z;
+            prop["rotx"] = props[i].transform.eulerAngles.x;
+            prop["roty"] = props[i].transform.eulerAngles.y;
+            prop["rotz"] = props[i].transform.eulerAngles.z;
             prop["scale"] = scales[i];
             json["prop"][-1] = prop;
         }

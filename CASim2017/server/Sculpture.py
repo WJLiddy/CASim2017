@@ -106,9 +106,9 @@ class Sculpture:
 		for rating in self.ratings:
 			save_file.write("(")
 			save_file.write(str(rating.score))
-			save_file.write(", ")
+			save_file.write(",")
 			save_file.write(str(rating.time))
-			save_file.write("),")
+			save_file.write(")")
 		save_file.write("]\n")
 		
 
@@ -118,11 +118,67 @@ class Sculpture:
 		save_file.write("\n")
 
 
-	def load(self, filepath):
-		load_file = open(filepath, 'r') 
+	def load(self, file_name, directory):
+ 		if not(directory[len(directory) - 1] == '/'):
+			directory+='/'
+			 
+		print "Loading file %s" % file_name
+		r_file = open(directory + file_name, 'r')
+		#first line is --ID--
+		line = r_file.readline()
+		#second is id
+		scp_id   = r_file.readline()
+		scp_id = scp_id[:-1] #remove \n
 		
-		line = load_file.readline()
-		line = load_file.readline()
+		
+		line     = r_file.readline()
+		scp_time = r_file.readline()
+		scp_time = scp_time[:-1] # remove \n 
+		
+		line     = r_file.readline()
+		reviews_str = r_file.readline()
+		reviews_str = reviews_str[:-1] #Remove \n
+
+		line     = r_file.readline()
+		scp_data = r_file.readline()
+		scp_data = scp_data[:-1]
+		
+
+		#cast each type of variable
+		scp_id = int(scp_id);
+		scp_time = float(scp_time);
+		#data is already a string	
+	
+		#position of left parentheses
+		pos_lpar = reviews_str.find('(')
+		pos_comma= reviews_str.find(',')
+		pos_rpar = reviews_str.find(')')
+		scp_scores = []
+		scp_times    = []
+		while (pos_lpar != -1):
+			
+			this_score = int(reviews_str[pos_lpar + 1: pos_comma])
+			scp_scores += [this_score]
+			scp_times  += [float(reviews_str[pos_comma + 1: pos_rpar])]
+			
+			
+			reviews_str = reviews_str[pos_rpar + 1:]			
+
+			pos_lpar = reviews_str.find('(')
+			pos_comma= reviews_str.find(',')
+			pos_rpar = reviews_str.find(')')
+			
+		self.id = scp_id
+		self.time = scp_time
+		for i in range(len(scp_scores)):
+			new_review = Rate(scp_scores[i], scp_times[i])
+			self.ratings.append(new_review)
+		
+		#scp_reviews
+
+		
+
+  
 
 
 #A gallery of Scuplptures:
@@ -251,13 +307,20 @@ class Gallery:
 			scp.save();
 
 	#Load one file
-	def load_one
+	def load_one(self, file_name, directory):
+		scp = Sculpture(-1, "NULL")
+		scp.load(file_name, directory)
+		self.scp_list.append(scp)
+
 
 	def load_all(self, directory = False):
 		if (directory == False):
 			directory = "Scp_Saves";
 		files = []
 		files = os.listdir(directory)
+		#load each file
+		for i in range(len(files)):
+			self.load_one(files[i], directory)
 		
 
 print os.listdir("Scp_Saves")

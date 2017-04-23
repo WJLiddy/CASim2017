@@ -44,7 +44,7 @@ public class Sock
         List<SimpleJSON.JSONNode> list = new List<SimpleJSON.JSONNode>();
 
         string buf = "";
-        for (int prop = 0; prop != 2; prop++)
+        for (int prop = 0; prop != 8; prop++)
         {
             Debug.Log("await...");
 

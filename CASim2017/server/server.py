@@ -62,7 +62,7 @@ class Server:
 			elif updown == "download  ":
 				time.sleep(1)
 				count = conn.recv(10)
-				for item in gallery.hot_list(int(count)):
+				for item in self.gallery.hot_list(int(count)):
 					ilen = str(len(item)) + ' '*(10-len(str(len(item))))
 					conn.send(ilen)
 					conn.send(item)
@@ -79,7 +79,6 @@ class Server:
 				break
 	     
 	    #came out of loop
-	    conn.recv(1)
 		conn.close()
 
 se = Server(10)
