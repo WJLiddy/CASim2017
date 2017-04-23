@@ -23,11 +23,17 @@ public class Sock
         }
     }
     
-    public void Submit()
+    public void Submit(string json)
     {
         sender.Send(Encoding.ASCII.GetBytes("upload    "));
-        sender.Send(Encoding.ASCII.GetBytes("5         "));
-        sender.Send(Encoding.ASCII.GetBytes("12345"));
+        string num = json.Length.ToString();
+
+        sender.Send(Encoding.ASCII.GetBytes(num));
+        for (int i = num.Length; i != 10; i++)
+        {
+            sender.Send(Encoding.ASCII.GetBytes(" "));
+        }
+        sender.Send(Encoding.ASCII.GetBytes(json));
     }
 
     /**

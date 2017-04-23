@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.UI;
+using SimpleJSON;
 
 public class Creator : MonoBehaviour {
     
@@ -10,6 +11,7 @@ public class Creator : MonoBehaviour {
     public int selectedObjectIndex = 0;
     public List<GameObject> props = new List<GameObject>();
     public List<string> propnames = new List<string>();
+    public List<float> scales = new List<float>();
     public float angle = 0.0f;
     public static float radius = 0.9f;
     public Vector3 anchorVector = new Vector3(0f, 0f, 0f);
@@ -241,6 +243,7 @@ public class Creator : MonoBehaviour {
         var name = split[split.Length - 1];
         childTextBox.text = name;
         propnames.Add(name);
+        scales.Add(scale);
         child.transform.SetParent(plist.transform); 
     }
 
@@ -254,14 +257,28 @@ public class Creator : MonoBehaviour {
         Debug.Log("joining server...\n");
         Sock s = new Sock();
         Debug.Log("trying submitting...\n");
-        s.Submit();
+        s.Submit(toJSON());
         Debug.Log("closing...\n");
         s.Close();
     }
 
     public string toJSON()
     {
-        return "";
+        JSONObject json = new JSONObject();
+        json["title"] = "Untitled Work";
+        
+        for(int i = 0; i != props.Count; i++)
+        {
+            JSONObject prop = new JSONObject();
+            prop["x"] = props[i].transform.position.x;
+            prop["y"] = props[i].transform.position.y;
+            prop["z"] = props[i].transform.position.z;
+            prop["rotx"] = props[i].transform.rotation.x;
+            prop["roty"] = props[i].transform.rotation.y;
+            prop["rotz"] = props[i].transform.rotation.z;
+            prop["scale"] = scales[i];
+        }
+        return json.ToString();
     }
 
 }
