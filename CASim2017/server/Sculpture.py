@@ -81,12 +81,38 @@ class Sculpture:
 	def returnDate(self):
 		return self.time
 
-	def Save(self):
+	def save(self):
 		filepath = "Scp_Saves/" + str(self.id)
-		save_file = open(filepath)
+		save_file = open(filepath, 'w')
+
+		save_file.write("--ID--\n")
+		save_file.write(str(self.id));
+		
+		save_file.write("\n")
+		
+		save_file.write("--Timestamp--\n")
+		save_file.write(str(self.time))
+	
+		save_file.write("\n")
+
+		save_file.write("--Reviews(score, timestamp)--\n")
+		save_file.write("[")
+		for rating in self.ratings:
+			save_file.write("(")
+			save_file.write(str(rating.score))
+			save_file.write(", ")
+			save_file.write(str(rating.time))
+			save_file.write("),")
+		save_file.write("]\n")
+		
+
+		save_file.write("--Data--\n")
+		save_file.write(self.data)
+		
+		save_file.write("\n")
 
 
-	def Load(self, filepath):
+	def load(self, filepath):
 		load_file = open(filepath) 
 
 #A gallery of Scuplptures:
@@ -210,6 +236,11 @@ class Gallery:
 			print "ID: %s\n\t data[10]: %s\n\tHeat: %s\n\tCont: %s\n" % (scp.id, scp.data, scp.getHeat(), scp.getCont())
 	
 
+	def save_all(self):
+		for scp in self.scp_list:
+			scp.save();
 
+	def load_all(self):
+		pass
 
 

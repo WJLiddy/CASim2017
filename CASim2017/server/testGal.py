@@ -32,3 +32,6 @@ gallery.test_display();
 print "Controversial: %s" % gallery.cont_list(2);
 print "Hot: %s" % gallery.hot_list(2);
 print "New: %s" % gallery.new_list(2);
+print "Saving files!"
+gallery.save_all();
+print "Saved"
